@@ -1,0 +1,32 @@
+.header-content {
+    border-radius: 10px;
+    display: grid;
+    grid-template-columns: 50% 50%;
+    overflow: hidden;
+    background-color: #345574;
+    padding: 20px 10px;
+}
+
+.header-logo {
+    float: left;
+    height: 30px;
+    height: 30px;
+}
+
+span {
+    font-family: 'Courier New', Courier, monospace;
+    color: #909F9A;
+    font-size: 20px;
+    padding-left: 20px;
+    margin-top: 5px;
+    display: flex;
+    vertical-align: middle;
+}
+
+.header-title {
+    text-align: center;
+}
+
+.header-project-name {
+    float:right;
+}

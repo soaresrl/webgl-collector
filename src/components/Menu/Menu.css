@@ -1,0 +1,68 @@
+.navigation {
+    border-radius: 10px;
+    position: relative;
+    width: 60px;
+    height: 100%;
+    background: #C8C2C2;
+    transition: 0.5s;
+    overflow: hidden;
+}
+
+.navigation:hover {
+    width: 300px;
+}
+
+.navigation ul {
+    position: absolute;
+    margin: 0;
+    padding: 0;
+    top: 0;
+    left: 0;
+    width: 100%;
+}
+
+.navigation ul li {
+    margin: 0;
+    padding: 0;
+    position: relative;
+    width: 100%;
+    list-style: none;
+}
+
+.navigation ul li:hover {
+    background: #909F9A;
+}
+
+.navigation ul li a {
+    position: relative;
+    display: block;
+    width: 100%;
+    display: flex;
+    text-decoration: none;
+    color: #6A8BB4;
+}
+
+.navigation ul li a span {
+    color: #6A8BB4;
+}
+
+.title {
+    margin-top: 15px;
+}
+
+.navigation ul li a .icon {
+    margin: 0;
+    padding: 0;
+    position: relative;
+    display: block;
+    min-width: 60px;
+    height: 60px;
+    line-height: 60px;
+    text-align: center;
+}
+
+hr {
+    margin: 0;
+    padding: 0;
+    border-top: 1px solid #ffffff;
+}

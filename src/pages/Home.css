@@ -1,0 +1,15 @@
+.container {
+    display: grid;
+    grid-template-rows: 90px auto;
+    background: #ffffff;
+    width: 100vw;
+    height: 100vh;
+}
+
+.content {
+    margin-top: 5px;
+    width: auto;
+    height: auto;
+    display: grid;
+    grid-template-columns: 60px auto;
+}
