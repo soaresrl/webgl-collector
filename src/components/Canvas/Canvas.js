@@ -96,19 +96,39 @@ export default class Canvas extends Component {
     }
 
     makeDisplayCurves(){
-        this.gl.useProgram(this.program);
+        const curves = this.model.getCurves();
+        curves.forEach(curve => {
+            const pts = curve.getPointsToDraw();
+            const pCoords = [];
 
-        const positionBuffer = this.gl.createBuffer();
-        this.gl.bindBuffer(this.gl.ARRAY_BUFFER, positionBuffer);
-        this.gl.bufferData(this.gl.ARRAY_BUFFER, new Float32Array([0.0, 0.0, 0.0, 10.0, 10.0, 10.0]), this.gl.STATIC_DRAW);
+            // If curve is selected draw it in red, else draw it in blue
+            if (curve.isSelected()) {
+                this.gl.uniform4fv(this.colorLocation, [1,0,0,0]);
+            }
+            else
+            {
+                this.gl.uniform4fv(this.colorLocation, [0,0,1,0]);
+            }
 
-        this.gl.enableVertexAttribArray(this.positionAttributeLocation);
-        this.gl.vertexAttribPointer(this.positionAttributeLocation, 3, this.gl.FLOAT, false, 0, 0);
+            // Stores the vertices of the curve to pass to the buffer
+            for (let i = 0; i < pts.length; i++) {
+                pCoords.push(pts[i].x);
+                pCoords.push(pts[i].y);
+                pCoords.push(0.0);
+            }
 
-        this.glOrtho(this.left, this.right, this.bottom, this.top, -1.0, 1.0);
-        this.gl.uniform4fv(this.colorLocation, [0,0,1,0]);
+            const positionBuffer = this.gl.createBuffer();
+            this.gl.bindBuffer(this.gl.ARRAY_BUFFER, positionBuffer);
+            this.gl.bufferData(this.gl.ARRAY_BUFFER, new Float32Array(pCoords), this.gl.STATIC_DRAW);
+    
+            this.gl.enableVertexAttribArray(this.positionAttributeLocation);
+            this.gl.vertexAttribPointer(this.positionAttributeLocation, 3, this.gl.FLOAT, false, 0, 0);
+    
+            this.gl.uniform4fv(this.colorLocation, [0,0,0,0]);
+    
+            this.gl.drawArrays(this.gl.LINES, 0, pCoords.length/3)
 
-        this.gl.drawArrays(this.gl.LINES, 0, 2)
+        });
     } 
 
     makeDisplayGrid(){
@@ -136,8 +156,9 @@ export default class Canvas extends Component {
             x += gridX;
         }
 
-        const positionBuffer = this.gl.createBuffer();
-        this.gl.bindBuffer(this.gl.ARRAY_BUFFER, positionBuffer);
+        // Draw grid points
+        const ptsPositionBuffer = this.gl.createBuffer();
+        this.gl.bindBuffer(this.gl.ARRAY_BUFFER, ptsPositionBuffer);
         this.gl.bufferData(this.gl.ARRAY_BUFFER, new Float32Array(vertices), this.gl.STATIC_DRAW);
 
         this.gl.enableVertexAttribArray(this.positionAttributeLocation);
@@ -145,8 +166,49 @@ export default class Canvas extends Component {
 
         this.gl.uniform4fv(this.colorLocation, [0,0,0,0]);
 
-        this.gl.drawArrays(this.gl.POINTS, 0, vertices.length/2)
+        this.gl.drawArrays(this.gl.POINTS, 0, vertices.length/3);
+
+        // Draw grid center lines
+        const linePositionBuffer = this.gl.createBuffer();
+        this.gl.bindBuffer(this.gl.ARRAY_BUFFER, linePositionBuffer);
+        this.gl.bufferData(this.gl.ARRAY_BUFFER, new Float32Array([-0.25, 0.0, 0.0, 0.25, 0.0, 0.0, 0.0, -0.25, 0.0, 0.0, 0.25, 0.0]), this.gl.STATIC_DRAW);
+
+        this.gl.enableVertexAttribArray(this.positionAttributeLocation);
+        this.gl.vertexAttribPointer(this.positionAttributeLocation, 3, this.gl.FLOAT, false, 0, 0);
+
+        this.gl.uniform4fv(this.colorLocation, [0,0,0,0]);
+
+        this.gl.drawArrays(this.gl.LINES, 0, 4);
     } 
+
+    scaleWorldWindow(scaleFac){
+        let vpr, cx, cy, sizex, sizey;
+
+        // Compute canvas viewport ratio
+        vpr = this.height / this.width;
+
+        // Get current window center
+        cx = (this.left + this.right) / 2;
+        cy = (this.bottom + this.top) / 2;
+
+        // Set new window sizes based on scaling factor
+        sizex = (this.right - this.left) * scaleFac;
+        sizey = (this.top - this.bottom) * scaleFac;
+
+        // Adjust window to keep the same aspect ratio of the viewport.
+        if (sizey / sizex > vpr){
+            sizex = sizey / vpr;
+        }
+        else if (sizey / sizex < vpr)
+        {
+            sizey = sizex*vpr;
+        }
+
+        this.right = cx + (sizex / 2);
+        this.left = cx - (sizex / 2);
+        this.top = cy + (sizey / 2);
+        this.bottom = cy - (sizey / 2);
+    }
 
     resizeGL(){
         const canvas = document.getElementById('canvas');
@@ -156,8 +218,12 @@ export default class Canvas extends Component {
         canvas.height = canvas.clientHeight;
 
         this.gl.viewport(0,0, this.gl.canvas.width, this.gl.canvas.height);
+
+        this.scaleWorldWindow(1.0);
         
         this.glOrtho(this.left, this.right, this.bottom, this.top, -1, 1);
+
+        this.paint();
     }
 
     onMouseDown(e){
@@ -295,7 +361,7 @@ export default class Canvas extends Component {
         this.gl.clearColor(0, 0, 0, 1);
         this.gl.clear(this.gl.COLOR_BUFFER_BIT);
 
-        //this.makeDisplayCurves();
+        this.makeDisplayCurves();
         this.makeDisplayGrid();
     }
 
