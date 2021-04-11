@@ -4,13 +4,18 @@ import {LineOutlined, SelectOutlined, ApiOutlined, PlusSquareOutlined, TableOutl
 import './Menu.css'
 
 export default class SideMenu extends Component {
+
+    changeMouse(mouseAction){
+        this.props.changeMouseAction(mouseAction);
+    }
+
     render() {
         return (
            <div className='navigation'>
                <ul>
-                   <li>
+                   <li onClick={()=>{this.changeMouse('COLLECTION')}}>
                        <a href='#'>
-                           <LineOutlined className='icon' />
+                           <LineOutlined className='icon'/>
                            <span className='title'>Line</span>
                        </a>
                    </li>

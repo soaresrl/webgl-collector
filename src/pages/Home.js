@@ -11,17 +11,18 @@ export default class Home extends Component {
         super(props);
 
         this.state = {
-            canvasW: SCENE_CONFIG.width,
-            canvasH: SCENE_CONFIG.height
+            mouseAction: null,
         }
 
+        // Bind handle functions
+        this.changeMouseAction = this.changeMouseAction.bind(this);
     }
 
-    setSize(w, h){
-        const initialState = this.state;
-        const newState = {width: w, height: h};
-
-        this.setState({...initialState, newState });
+    changeMouseAction(mouseAction){
+        console.log(mouseAction);
+        this.setState({
+                mouseAction: mouseAction
+            });
     }
 
     render(){
@@ -29,8 +30,8 @@ export default class Home extends Component {
             <div className='container'>
                 <Header/>
                 <div className='content'> 
-                    <SideMenu />
-                    <Canvas/>
+                    <SideMenu changeMouseAction={this.changeMouseAction}/>
+                    <Canvas mouseAction={this.state.mouseAction}/>
                 </div>
             </div>
             

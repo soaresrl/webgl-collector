@@ -9,31 +9,40 @@ import './Canvas.css'
 
 export default class Canvas extends Component {
    
-    constructor(){
-        super();
-        this.state = {
+    constructor(props){
+
+        super(props);
+
+        // Set react component initial state
+        /* this.state = {
             curves: [],
-            mouseAction: null
-        }
+            mouseAction: this.props.mouseAction
+        } */
+
+        // Set app data structure
         this.model = new model();
         this.collector = new curveCollector();
         this.grid = new Grid();
 
+        // Set viewport dimensions for orthographic projection
         this.left = -5;
         this.right = 5;
         this.top = 5;
         this.bottom = -5;
 
+        this.mouseMoveTol = 2;
+        this.pickTolFac = 0.01;
+
     }
 
     componentDidMount(){
 
-        // Get A WebGL context
         const canvas = document.getElementById("canvas");
         
         this.width = canvas.clientWidth;
         this.height =  canvas.clientHeight;
 
+        // Get A WebGL context
         this.gl = canvas.getContext("webgl");
         if (!this.gl) {
             console.log('no WebGl for you');
@@ -67,6 +76,7 @@ export default class Canvas extends Component {
 
         this.gl.drawArrays(this.gl.LINES, 0, 2); */
         window.addEventListener('resize', this.resizeGL.bind(this));
+        canvas.addEventListener('contextmenu', (e)=>{e.preventDefault()});
     }
 
     glOrtho(left, right, bottom, top, near, far){
@@ -103,11 +113,11 @@ export default class Canvas extends Component {
 
             // If curve is selected draw it in red, else draw it in blue
             if (curve.isSelected()) {
-                this.gl.uniform4fv(this.colorLocation, [1,0,0,0]);
+                this.gl.uniform4fv(this.colorLocation, [1,0,0,1]);
             }
             else
             {
-                this.gl.uniform4fv(this.colorLocation, [0,0,1,0]);
+                this.gl.uniform4fv(this.colorLocation, [0,0,1,1]);
             }
 
             // Stores the vertices of the curve to pass to the buffer
@@ -124,7 +134,7 @@ export default class Canvas extends Component {
             this.gl.enableVertexAttribArray(this.positionAttributeLocation);
             this.gl.vertexAttribPointer(this.positionAttributeLocation, 3, this.gl.FLOAT, false, 0, 0);
     
-            this.gl.uniform4fv(this.colorLocation, [0,0,0,0]);
+            //this.gl.uniform4fv(this.colorLocation, [0,0,0,0]);
     
             this.gl.drawArrays(this.gl.LINES, 0, pCoords.length/3)
 
@@ -212,15 +222,15 @@ export default class Canvas extends Component {
 
     resizeGL(){
         const canvas = document.getElementById('canvas');
-        this.width = canvas.clientWidth;
-        this.height = canvas.clientHeight;
         canvas.width = canvas.clientWidth;
         canvas.height = canvas.clientHeight;
 
+        this.width = this.gl.canvas.width;
+        this.height = this.gl.canvas.height;
         this.gl.viewport(0,0, this.gl.canvas.width, this.gl.canvas.height);
 
         this.scaleWorldWindow(1.0);
-        
+        console.log('resize')
         this.glOrtho(this.left, this.right, this.bottom, this.top, -1, 1);
 
         this.paint();
@@ -232,15 +242,20 @@ export default class Canvas extends Component {
         this.buttonPressed = true;
         this.mouseButton = e.button;
 
-        this.pt0 = Mouse.getPosition(e);
-        this.vertices = [this.pt0.x, this.pt0.y];
-        /* switch (this.state.MouseAction) {
+        this.pt0 = {x: e.clientX - e.target.offsetLeft, y: e.clientY - e.target.offsetTop};
+        this.pt0W = this.getPosition(e);
+
+        switch (this.props.mouseAction) {
             case 'SELECTION':
                 
                 break;
             case 'COLLECTION':
                 if (!this.collector.isActive()) {
-                    this.collector.startCurveCollection();
+                    
+                    // In case of left mouse button click start collecting
+                    if(this.mouseButton === 0){    
+                        this.collector.startCurveCollection();
+                    }
                 }
                 break;
             case 'PAN':
@@ -248,18 +263,16 @@ export default class Canvas extends Component {
             break;
             default:
                 break;
-        } */
-       this.paint();
+        }
     }
 
     onMouseUp(e){
         e.preventDefault();
-        const m_pos = Mouse.getPosition(e);
-
         this.buttonPressed = false;
-        this.pt0 = Mouse.getPosition(e);
+        this.pt1 = {x: e.clientX - e.target.offsetLeft, y: e.clientY - e.target.offsetTop}
+        this.pt1W = this.getPosition(e);
 
-        /* switch (this.state.mouseAction) {
+        switch (this.props.mouseAction) {
             case 'SELECTION':
                 if (this.mouseButton === 0) {
                     if (this.model != null && !(this.model.isEmpty())) {
@@ -269,43 +282,43 @@ export default class Canvas extends Component {
                         }
                         else
                         {
-                            var xmin = (this.pt0.x < this.pt1.x) ? this.pt0.x : this.pt1.x;
-                            var xmax = (this.pt0.x > this.pt1.x) ? this.pt0.x : this.pt1.x;
-                            var ymin = (this.pt0.y < this.pt1.y) ? this.pt0.y : this.pt1.y;
-                            var ymax = (this.pt0.y > this.pt1.y) ? this.pt0.y : this.pt1.y;
+                            const xmin = (this.pt0W.x < this.pt1W.x) ? this.pt0W.x : this.pt1W.x;
+                            const xmax = (this.pt0W.x > this.pt1W.x) ? this.pt0W.x : this.pt1W.x;
+                            const ymin = (this.pt0W.y < this.pt1W.y) ? this.pt0W.y : this.pt1W.y;
+                            const ymax = (this.pt0W.y > this.pt1W.y) ? this.pt0W.y : this.pt1W.y;
                             //this.socket.emit('select-fence', xmin, xmax, ymin, ymax);
                             this.model.selectFence(xmin, xmax, ymin, ymax);
                         }
                     }
-                    this.render();
+                    this.paint();
                 }
                 break;
             case 'COLLECTION':
                 if (this.mouseButton === 0) {
                     if ((Math.abs(this.pt0.x - this.pt1.x) < this.mouseMoveTol) && 
                     (Math.abs(this.pt0.y - this.pt1.y) < this.mouseMoveTol)) {
-                        var max_size = ((this.right-this.left) >= (this.top - this.bottom) ? (this.right-this.left) :
+                        const max_size = ((this.right-this.left) >= (this.top - this.bottom) ? (this.right-this.left) :
                         (this.top - this.bottom));
-                        var tol = max_size*this.pickTolFac;
+                        const tol = max_size*this.pickTolFac;
 
-                        if (this.gridObj.getSnapInfo()) {
-                            var pos = {x: this.pt1.x, y: this.pt1.y};
-                            this.gridObj.snapTo(pos);
-                            this.pt1.x = pos.x;
-                            this.pt1.y = pos.y;
+                        if (this.grid.getSnapInfo()) {
+                            let pos = {x: this.pt1W.x, y: this.pt1W.y};
+                            this.grid.snapTo(pos);
+                            this.pt1W.x = pos.x;
+                            this.pt1W.y = pos.y;
                         }
 
                         if (this.model && !this.model.isEmpty()) {
-                            var pos = {x: this.pt1.x, y: this.pt1.y};
+                            let pos = {x: this.pt1W.x, y: this.pt1W.y};
                             this.model.snapToCurve(pos, tol);
-                            this.pt1.x = pos.x;
-                            this.pt1.y = pos.y;
+                            this.pt1W.x = pos.x;
+                            this.pt1W.y = pos.y;
                         }
-                        this.collector.insertPoint(this.pt1.x, this.pt1.y, tol);
+                        this.collector.insertPoint(this.pt1W.x, this.pt1W.y, tol);
                     }
                 }
 
-                var endCollection = false;
+                let endCollection = false;
                 if (this.mouseButton === 0) {
                     if (!this.collector.isUnlimited()) {
                         if (this.collector.hasFinished()) {
@@ -322,38 +335,81 @@ export default class Canvas extends Component {
                         else
                         {
                             this.collector.reset();
-                            this.render();
+                            this.paint();
                         }
                     }
                     else
                     {
                         this.collector.reset();
-                        this.render();
+                        this.paint();
                     }
                 }
 
                 if (endCollection) {
-                    var curve = this.collector.getCollectedCurve();
-                    this.curves.push(curve);
+                    const curve = this.collector.getCollectedCurve();
+                    //this.curves.push(curve);
                     this.model.insertCurve(curve);
                     this.collector.endCurveCollection();
-                    this.render();
-                    this.socket.emit('insert-curve', curve);
+                    this.paint();
+                    //this.socket.emit('insert-curve', curve);
                 }
                 break;
         
             default:
                 break;
-        } */
+        }
         
     }
     
     onMouseMove(e){
         e.preventDefault();
-        
-        const m_pos = this.getPosition(e);
-        console.log(m_pos);
-        //const pos = Mouse.setToUniverse(m_pos, e);
+
+        this.buttonPressed = true;
+        this.mouseButton = e.button;
+
+        this.pt1 = {x: e.clientX - e.target.offsetLeft, y: e.clientY - e.target.offsetTop};
+        this.pt1W = this.getPosition(e);
+
+        switch (this.props.mouseAction) {
+            case 'SELECTION':
+                if (this.mouseButton === 0 && this.buttonPressed) {
+                    this.paint();
+                }
+                break;
+            case 'COLLECTION':
+               if (this.mouseButton === 0 && (!this.buttonPressed)) {
+                   if ((Math.abs(this.pt0.x - this.pt1.x) <= this.mouseMoveTol) && 
+                   (Math.abs(this.pt0.y - this.pt1.y) <= this.mouseMoveTol)) {
+                       if (this.collector.isCollecting()) {
+                           if (this.grid.getSnapInfo()) {
+                            let pos = {x: this.pt1W.x, y: this.pt1W.y};
+                            this.grid.snapTo(pos);
+                            this.pt1W.x = pos.x;
+                            this.pt1W.y = pos.y;
+                           }
+
+                            if (this.model && !this.model.isEmpty()) {
+
+                                const max_size = ((this.right-this.left) >= (this.top - this.bottom) ? (this.right-this.left) :
+                                                    (this.top - this.bottom));
+                                const tol = max_size*this.pickTolFac;
+
+                                let pos = {x: this.pt1W.x, y: this.pt1W.y};
+                                this.model.snapToCurve(pos, tol);
+                                this.pt1W.x = pos.x;
+                                this.pt1W.y = pos.y;
+                            }
+                            this.collector.addTempPoint(this.pt1W.x, this.pt1W.y);
+                            this.paint();
+                       }
+                   }
+               }
+            case 'PAN':
+            
+            break;
+            default:
+                break;
+        }
     }
 
     paint(){    
