@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import Canvas from '../components/Canvas/Canvas';
 import Header from '../components/Header/Header';
 import SideMenu from '../components/Menu/SideMenu';
-import { SCENE_CONFIG } from '../Constants/Constants';
 import './Home.css';
 
 export default class Home extends Component {
@@ -19,7 +18,6 @@ export default class Home extends Component {
     }
 
     changeMouseAction(mouseAction){
-        console.log(mouseAction);
         this.setState({
                 mouseAction: mouseAction
             });
@@ -34,8 +32,6 @@ export default class Home extends Component {
                     <Canvas mouseAction={this.state.mouseAction}/>
                 </div>
             </div>
-            
-
         );
     }
 }

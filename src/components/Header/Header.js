@@ -11,7 +11,7 @@ export default class Header extends Component {
                     <span className='header-title' >Web Curve Collector - PUC-Rio</span>
                 </div>
                 
-                <span className='header-project-name'> Project 1 </span>
+                <span className='header-project-name'> Project Name </span>
             </div>
         )
     }

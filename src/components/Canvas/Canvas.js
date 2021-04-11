@@ -1,10 +1,8 @@
-import { ConsoleSqlOutlined, VerifiedOutlined } from '@ant-design/icons';
 import React, { Component } from 'react'
 import curveCollector from '../../curves/curveCollector';
 import Grid from '../../grid/grid';
 import model from '../../model/model';
 import GLUtils from '../../Utils/GLUtils';
-import Mouse from '../../Utils/Mouse';
 import './Canvas.css'
 
 export default class Canvas extends Component {
@@ -105,6 +103,13 @@ export default class Canvas extends Component {
         return {x, y}
     }
 
+    delSelectedEntities(){
+        if (this.model !== null && !this.model.isEmpty()) {
+            this.model.delSelectedCurves();
+            this.paint();
+        }
+    }
+
     makeDisplayCurves(){
         const curves = this.model.getCurves();
         curves.forEach(curve => {
@@ -136,10 +141,72 @@ export default class Canvas extends Component {
     
             //this.gl.uniform4fv(this.colorLocation, [0,0,0,0]);
     
-            this.gl.drawArrays(this.gl.LINES, 0, pCoords.length/3)
+            this.gl.drawArrays(this.gl.LINES, 0, pCoords.length/3);
 
         });
     } 
+
+    drawCollectedCurve(){
+        if ((!this.collector.isActive()) || (!this.collector.isCollecting())) {
+            return;
+        }
+
+        const pts = this.collector.getDrawPoints();
+        const pCoords = [];
+
+        for (let i = 0; i < pts.length; i++) {
+           
+            pCoords.push(pts[i].x);
+            pCoords.push(pts[i].y);
+            pCoords.push(0.0);
+            
+        }
+
+        const positionBuffer = this.gl.createBuffer();
+        this.gl.bindBuffer(this.gl.ARRAY_BUFFER, positionBuffer);
+        this.gl.bufferData(this.gl.ARRAY_BUFFER, new Float32Array(pCoords), this.gl.STATIC_DRAW);
+
+        this.gl.enableVertexAttribArray(this.positionAttributeLocation);
+        this.gl.vertexAttribPointer(this.positionAttributeLocation, 3, this.gl.FLOAT, false, 0, 0);
+
+        this.gl.uniform4fv(this.colorLocation, [1,1,1,1]);
+
+        this.gl.drawArrays(this.gl.LINES, 0, pCoords.length/3);
+    }
+
+    drawSelectionFence(){
+        if (!this.buttonPressed) {
+            return;
+        }
+
+        if ((this.pt0.x === this.pt1.x) && (this.pt0.y === this.pt1.y) ) {
+            return;
+        }
+
+        if ((this.model === null) || this.model.isEmpty() ) {
+            return;
+        }
+
+        const pCoords = [
+            this.pt0W.x, this.pt0W.y,
+            this.pt1W.x, this.pt0W.y,
+            this.pt1W.x, this.pt1W.y,
+            this.pt0W.x, this.pt1W.y,
+            this.pt0W.x, this.pt0W.y,
+        ]
+
+        const positionBuffer = this.gl.createBuffer();
+        this.gl.bindBuffer(this.gl.ARRAY_BUFFER, positionBuffer);
+        this.gl.bufferData(this.gl.ARRAY_BUFFER, new Float32Array(pCoords), this.gl.STATIC_DRAW);
+
+        this.gl.enableVertexAttribArray(this.positionAttributeLocation);
+        this.gl.vertexAttribPointer(this.positionAttributeLocation, 2, this.gl.FLOAT, false, 0, 0);
+
+        this.gl.uniform4fv(this.colorLocation, [0,1,0,1]);
+
+        this.gl.drawArrays(this.gl.LINE_STRIP, 0, 5);
+
+    }
 
     makeDisplayGrid(){
         let vertices = [];
@@ -230,7 +297,6 @@ export default class Canvas extends Component {
         this.gl.viewport(0,0, this.gl.canvas.width, this.gl.canvas.height);
 
         this.scaleWorldWindow(1.0);
-        console.log('resize')
         this.glOrtho(this.left, this.right, this.bottom, this.top, -1, 1);
 
         this.paint();
@@ -364,9 +430,6 @@ export default class Canvas extends Component {
     onMouseMove(e){
         e.preventDefault();
 
-        this.buttonPressed = true;
-        this.mouseButton = e.button;
-
         this.pt1 = {x: e.clientX - e.target.offsetLeft, y: e.clientY - e.target.offsetTop};
         this.pt1W = this.getPosition(e);
 
@@ -378,8 +441,8 @@ export default class Canvas extends Component {
                 break;
             case 'COLLECTION':
                if (this.mouseButton === 0 && (!this.buttonPressed)) {
-                   if ((Math.abs(this.pt0.x - this.pt1.x) <= this.mouseMoveTol) && 
-                   (Math.abs(this.pt0.y - this.pt1.y) <= this.mouseMoveTol)) {
+                   if ((Math.abs(this.pt0.x - this.pt1.x) > this.mouseMoveTol) && 
+                   (Math.abs(this.pt0.y - this.pt1.y) > this.mouseMoveTol)) {
                        if (this.collector.isCollecting()) {
                            if (this.grid.getSnapInfo()) {
                             let pos = {x: this.pt1W.x, y: this.pt1W.y};
@@ -389,7 +452,6 @@ export default class Canvas extends Component {
                            }
 
                             if (this.model && !this.model.isEmpty()) {
-
                                 const max_size = ((this.right-this.left) >= (this.top - this.bottom) ? (this.right-this.left) :
                                                     (this.top - this.bottom));
                                 const tol = max_size*this.pickTolFac;
@@ -419,6 +481,8 @@ export default class Canvas extends Component {
 
         this.makeDisplayCurves();
         this.makeDisplayGrid();
+        this.drawCollectedCurve();
+        this.drawSelectionFence();
     }
 
     render(){

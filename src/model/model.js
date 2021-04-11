@@ -230,6 +230,22 @@ class model {
         delete this.curves[curve_id];
         this.curves.splice(curve_id, 1);
     }
+
+    delSelectedCurves(){
+        let curveRemoved;
+        do {
+            curveRemoved = false;
+            for (let i = 0; i < this.curves.length; i++) {
+                
+                if (this.curves[i].isSelected()) {
+                    this.delCurve(i);
+                    curveRemoved = true
+                    break;
+                }
+                
+            }
+        } while (curveRemoved);
+    }
 }
 
 export default model;

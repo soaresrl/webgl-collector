@@ -19,7 +19,7 @@ export default class SideMenu extends Component {
                            <span className='title'>Line</span>
                        </a>
                    </li>
-                   <li>
+                   <li onClick={()=>{this.changeMouse('SELECTION')}}>
                        <a href='#'>
                             <SelectOutlined  className='icon'/>
                            <span className='title'>Select</span>
