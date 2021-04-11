@@ -9,6 +9,11 @@ export default class SideMenu extends Component {
         this.props.changeMouseAction(mouseAction);
     }
 
+    deleteCurves(){
+        this.props.model.delSelectedCurves();
+        this.props.canvasRef.current.paint();
+    }
+
     render() {
         return (
            <div className='navigation'>
@@ -31,7 +36,7 @@ export default class SideMenu extends Component {
                            <span className='title'>Grid</span>
                        </a>
                    </li>
-                   <li>
+                   <li onClick={this.deleteCurves.bind(this)}>
                        <a href='#'>
                             <DeleteOutlined className='icon'/>
                            <span className='title'>Delete</span>

@@ -18,7 +18,7 @@ export default class Canvas extends Component {
         } */
 
         // Set app data structure
-        this.model = new model();
+        //this.model = new model();
         this.collector = new curveCollector();
         this.grid = new Grid();
 
@@ -104,14 +104,14 @@ export default class Canvas extends Component {
     }
 
     delSelectedEntities(){
-        if (this.model !== null && !this.model.isEmpty()) {
-            this.model.delSelectedCurves();
+        if (this.props.model !== null && !this.props.model.isEmpty()) {
+            this.props.model.delSelectedCurves();
             this.paint();
         }
     }
 
     makeDisplayCurves(){
-        const curves = this.model.getCurves();
+        const curves = this.props.model.getCurves();
         curves.forEach(curve => {
             const pts = curve.getPointsToDraw();
             const pCoords = [];
@@ -183,7 +183,7 @@ export default class Canvas extends Component {
             return;
         }
 
-        if ((this.model === null) || this.model.isEmpty() ) {
+        if ((this.props.model === null) || this.props.model.isEmpty() ) {
             return;
         }
 
@@ -341,7 +341,7 @@ export default class Canvas extends Component {
         switch (this.props.mouseAction) {
             case 'SELECTION':
                 if (this.mouseButton === 0) {
-                    if (this.model != null && !(this.model.isEmpty())) {
+                    if (this.props.model != null && !(this.props.model.isEmpty())) {
                         if ((Math.abs(this.pt0.x - this.pt1.x) <= this.mouseMoveTol) && 
                         (Math.abs(this.pt0.y - this.pt1.y) <= this.mouseMoveTol)) {
 
@@ -353,7 +353,7 @@ export default class Canvas extends Component {
                             const ymin = (this.pt0W.y < this.pt1W.y) ? this.pt0W.y : this.pt1W.y;
                             const ymax = (this.pt0W.y > this.pt1W.y) ? this.pt0W.y : this.pt1W.y;
                             //this.socket.emit('select-fence', xmin, xmax, ymin, ymax);
-                            this.model.selectFence(xmin, xmax, ymin, ymax);
+                            this.props.model.selectFence(xmin, xmax, ymin, ymax);
                         }
                     }
                     this.paint();
@@ -374,9 +374,9 @@ export default class Canvas extends Component {
                             this.pt1W.y = pos.y;
                         }
 
-                        if (this.model && !this.model.isEmpty()) {
+                        if (this.props.model && !this.props.model.isEmpty()) {
                             let pos = {x: this.pt1W.x, y: this.pt1W.y};
-                            this.model.snapToCurve(pos, tol);
+                            this.props.model.snapToCurve(pos, tol);
                             this.pt1W.x = pos.x;
                             this.pt1W.y = pos.y;
                         }
@@ -414,7 +414,7 @@ export default class Canvas extends Component {
                 if (endCollection) {
                     const curve = this.collector.getCollectedCurve();
                     //this.curves.push(curve);
-                    this.model.insertCurve(curve);
+                    this.props.model.insertCurve(curve);
                     this.collector.endCurveCollection();
                     this.paint();
                     //this.socket.emit('insert-curve', curve);
@@ -451,13 +451,13 @@ export default class Canvas extends Component {
                             this.pt1W.y = pos.y;
                            }
 
-                            if (this.model && !this.model.isEmpty()) {
+                            if (this.props.model && !this.props.model.isEmpty()) {
                                 const max_size = ((this.right-this.left) >= (this.top - this.bottom) ? (this.right-this.left) :
                                                     (this.top - this.bottom));
                                 const tol = max_size*this.pickTolFac;
 
                                 let pos = {x: this.pt1W.x, y: this.pt1W.y};
-                                this.model.snapToCurve(pos, tol);
+                                this.props.model.snapToCurve(pos, tol);
                                 this.pt1W.x = pos.x;
                                 this.pt1W.y = pos.y;
                             }
