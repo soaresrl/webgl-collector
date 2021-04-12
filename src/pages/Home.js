@@ -38,7 +38,11 @@ export default class Home extends Component {
                 <div className='content'> 
                     <SideMenu canvasRef= {this.canvasRef} model={this.props.model} changeMouseAction={this.changeMouseAction}/>
                     <Canvas ref={this.canvasRef} model={this.props.model} mouseAction={this.state.mouseAction}/>
-                    <Checkbox onChange={this.toggleSnap.bind(this)} className='grid-snap'>Snap</Checkbox>
+                    <div className='grid-options'>
+                        <Checkbox onChange={this.toggleSnap.bind(this)} className='grid-snap'>Snap</Checkbox>
+                        <input placeholder='1.0' className='grid-input-x'/>
+                        <input placeholder='1.0' className='grid-input-y'/>
+                    </div>
                 </div>
             </div>
         );

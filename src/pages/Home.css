@@ -14,11 +14,17 @@
     grid-template-columns: 60px auto;
 }
 
-.grid-snap {
+.grid-options {
     position:absolute;
+    display: grid;
+    grid-template-columns: auto auto auto;
     margin: 0;
     bottom:0;
-    right:30px;
+    right: 0;
+}
+
+ .grid-snap {
+    margin: 2px;
 }
 
 .grid-snap span{
@@ -27,3 +33,13 @@
     display: inline;
     font-size: 15px;
 }
+
+.grid-input-x {
+    margin: 2px;
+    width: 25px;
+}
+
+.grid-input-y {
+    margin: 2px;
+    width: 25px;
+} 
