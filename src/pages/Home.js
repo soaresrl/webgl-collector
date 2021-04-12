@@ -2,6 +2,7 @@ import React, { Component, createRef } from 'react';
 import Canvas from '../components/Canvas/Canvas';
 import Header from '../components/Header/Header';
 import SideMenu from '../components/Menu/SideMenu';
+import { Checkbox } from 'antd';
 import './Home.css';
 
 export default class Home extends Component {
@@ -23,6 +24,13 @@ export default class Home extends Component {
             });
     }
 
+    toggleSnap(){
+        this.canvasRef.current.setState({
+            ...this.canvasRef.state,
+            is_SnapOn: !this.canvasRef.current.state.is_SnapOn
+        })
+    }
+
     render(){
         return(
             <div className='container'>
@@ -30,6 +38,7 @@ export default class Home extends Component {
                 <div className='content'> 
                     <SideMenu canvasRef= {this.canvasRef} model={this.props.model} changeMouseAction={this.changeMouseAction}/>
                     <Canvas ref={this.canvasRef} model={this.props.model} mouseAction={this.state.mouseAction}/>
+                    <Checkbox onChange={this.toggleSnap.bind(this)} className='grid-snap'>Snap</Checkbox>
                 </div>
             </div>
         );

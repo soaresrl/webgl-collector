@@ -13,3 +13,17 @@
     display: grid;
     grid-template-columns: 60px auto;
 }
+
+.grid-snap {
+    position:absolute;
+    margin: 0;
+    bottom:0;
+    right:30px;
+}
+
+.grid-snap span{
+    margin: 0;
+    padding: 0;
+    display: inline;
+    font-size: 15px;
+}

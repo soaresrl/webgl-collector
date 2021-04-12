@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import curveCollector from '../../curves/curveCollector';
 import Grid from '../../grid/grid';
-import model from '../../model/model';
+//import model from '../../model/model';
 import GLUtils from '../../Utils/GLUtils';
 import './Canvas.css'
 
@@ -12,10 +12,10 @@ export default class Canvas extends Component {
         super(props);
 
         // Set react component initial state
-        /* this.state = {
-            curves: [],
-            mouseAction: this.props.mouseAction
-        } */
+        this.state = {
+            viewGrid: false,
+            is_SnapOn: false
+        }
 
         // Set app data structure
         //this.model = new model();
@@ -75,6 +75,10 @@ export default class Canvas extends Component {
         this.gl.drawArrays(this.gl.LINES, 0, 2); */
         window.addEventListener('resize', this.resizeGL.bind(this));
         canvas.addEventListener('contextmenu', (e)=>{e.preventDefault()});
+    }
+
+    componentDidUpdate(){
+        this.paint()
     }
 
     glOrtho(left, right, bottom, top, near, far){
@@ -344,7 +348,13 @@ export default class Canvas extends Component {
                     if (this.props.model != null && !(this.props.model.isEmpty())) {
                         if ((Math.abs(this.pt0.x - this.pt1.x) <= this.mouseMoveTol) && 
                         (Math.abs(this.pt0.y - this.pt1.y) <= this.mouseMoveTol)) {
+                            
+                            const max_size = ((this.right-this.left) >= (this.top - this.bottom) ? (this.right-this.left) :
+                            (this.top - this.bottom));
 
+                            const tol = max_size*this.pickTolFac;
+
+                            this.props.model.selectPick(this.pt1W.x, this.pt1W.y, tol);
                         }
                         else
                         {
@@ -367,7 +377,7 @@ export default class Canvas extends Component {
                         (this.top - this.bottom));
                         const tol = max_size*this.pickTolFac;
 
-                        if (this.grid.getSnapInfo()) {
+                        if (this.state.is_SnapOn) {
                             let pos = {x: this.pt1W.x, y: this.pt1W.y};
                             this.grid.snapTo(pos);
                             this.pt1W.x = pos.x;
@@ -444,7 +454,7 @@ export default class Canvas extends Component {
                    if ((Math.abs(this.pt0.x - this.pt1.x) > this.mouseMoveTol) && 
                    (Math.abs(this.pt0.y - this.pt1.y) > this.mouseMoveTol)) {
                        if (this.collector.isCollecting()) {
-                           if (this.grid.getSnapInfo()) {
+                            if (this.state.is_SnapOn) {
                             let pos = {x: this.pt1W.x, y: this.pt1W.y};
                             this.grid.snapTo(pos);
                             this.pt1W.x = pos.x;
@@ -480,7 +490,7 @@ export default class Canvas extends Component {
         this.gl.clear(this.gl.COLOR_BUFFER_BIT);
 
         this.makeDisplayCurves();
-        this.makeDisplayGrid();
+        this.state.viewGrid && this.makeDisplayGrid();
         this.drawCollectedCurve();
         this.drawSelectionFence();
     }

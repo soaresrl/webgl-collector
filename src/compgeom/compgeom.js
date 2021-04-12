@@ -14,7 +14,7 @@ export const SIGN = {
 const ABSTOL = 1e-7;
 
 function area2d(p1,p2,p3){
-    var A = {
+    let A = {
         x: p2.x - p1.x,
         y: p2.y - p1.y
     },
@@ -29,7 +29,7 @@ function area2d(p1,p2,p3){
 }
 
 function orientation(p1, p2, p3){
-    var val = (p2.y - p1.y)*(p3.x - p2.x) - 
+    let val = (p2.y - p1.y)*(p3.x - p2.x) - 
                 (p2.x - p1.x)*(p3.y - p2.y);
 
     if (val === 0) {
@@ -40,13 +40,13 @@ function orientation(p1, p2, p3){
 }
 
 export function computeSegmentSegmentIntersection(params) {
-    var area123 = 0.0; // twice the area of triangle 123
-    var area124 = 0.0; // twice the area of triangle 124
-    var area341 = 0.0; // twice the area of triangle 341
-    var area342 = 0.0; // twice the area of triangle 342
+    let area123 = 0.0; // twice the area of triangle 123
+    let area124 = 0.0; // twice the area of triangle 124
+    let area341 = 0.0; // twice the area of triangle 341
+    let area342 = 0.0; // twice the area of triangle 342
 
-    var x12_l, x12_r;
-    var x34_l, x34_r;
+    let x12_l, x12_r;
+    let x34_l, x34_r;
 
     x12_l = (params.p1.x < params.p2.x) ? params.p1.x : params.p2.x;
     x12_r = (params.p1.x > params.p2.x) ? params.p1.x : params.p2.x;
@@ -57,8 +57,8 @@ export function computeSegmentSegmentIntersection(params) {
         return IntersectionType.DO_NOT_INTERSECT;
     }
 
-    var y12_b, y12_t;
-    var y34_b, y34_t;
+    let y12_b, y12_t;
+    let y34_b, y34_t;
 
     y12_b = (params.p1.y < params.p2.y) ? params.p1.y : params.p2.y;
     y12_t = (params.p1.y > params.p2.y) ? params.p1.y : params.p2.y;
@@ -69,8 +69,8 @@ export function computeSegmentSegmentIntersection(params) {
         return IntersectionType.DO_NOT_INTERSECT;
     }
 
-    var sign123 = orientation(params.p1, params.p2, params.p3);
-    var sign124 = orientation(params.p1, params.p2, params.p4);
+    let sign123 = orientation(params.p1, params.p2, params.p3);
+    let sign124 = orientation(params.p1, params.p2, params.p4);
 
     if (sign123 === SIGN.ZERO && sign124 === SIGN.ZERO) {
         return IntersectionType.COLLINEAR;
@@ -110,7 +110,7 @@ export function computeSegmentSegmentIntersection(params) {
 
     params.t34 = area2d(params.p1,params.p2,params.p3)/(area2d(params.p1,params.p2,params.p3) - area2d(params.p1,params.p2,params.p4));
 
-    var v34 = {
+    let v34 = {
         x: params.p4.x - params.p3.x,
         y: params.p4.y - params.p3.y
     }

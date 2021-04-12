@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import {LineOutlined, SelectOutlined, ApiOutlined, PlusSquareOutlined, TableOutlined,
-        DeleteOutlined} from '@ant-design/icons'
+        DeleteOutlined, ScissorOutlined} from '@ant-design/icons'
 import './Menu.css'
 
 export default class SideMenu extends Component {
@@ -11,6 +11,18 @@ export default class SideMenu extends Component {
 
     deleteCurves(){
         this.props.model.delSelectedCurves();
+        this.props.canvasRef.current.paint();
+    }
+
+    toggleGrid(){
+        this.props.canvasRef.current.setState({
+            ...this.props.canvasRef.current.state,
+            viewGrid: !this.props.canvasRef.current.state.viewGrid
+        })
+    }
+
+    handleIntersection(){
+        this.props.model.intersectTwoCurves();
         this.props.canvasRef.current.paint();
     }
 
@@ -30,7 +42,13 @@ export default class SideMenu extends Component {
                            <span className='title'>Select</span>
                        </a>
                    </li>
-                   <li>
+                   <li onClick={this.handleIntersection.bind(this)}>
+                       <a href='#'>
+                            <ScissorOutlined className='icon'/>
+                           <span className='title'>Intersect</span>
+                       </a>
+                   </li>
+                   <li onClick={this.toggleGrid.bind(this)}>
                        <a href='#'>
                             <TableOutlined className='icon'/>
                            <span className='title'>Grid</span>
