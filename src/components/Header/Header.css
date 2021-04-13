@@ -12,8 +12,7 @@
     height: 30px;
     height: 30px;
 }
-
-span {
+.header-content span {
     font-family: 'Courier New', Courier, monospace;
     color: #909F9A;
     font-size: 20px;

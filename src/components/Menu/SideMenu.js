@@ -26,52 +26,59 @@ export default class SideMenu extends Component {
         this.props.canvasRef.current.paint();
     }
 
+    handleJoinRoom(){
+        this.props.roomModalRef.current.setState({
+            ...this.props.roomModalRef.current.state,
+            isModalVisible: true
+        })
+    }
+
     render() {
         return (
            <div className='navigation'>
                <ul>
                    <li onClick={()=>{this.changeMouse('COLLECTION')}}>
-                       <a href='#'>
+                       <p>
                            <LineOutlined className='icon'/>
                            <span className='title'>Line</span>
-                       </a>
+                       </p>
                    </li>
                    <li onClick={()=>{this.changeMouse('SELECTION')}}>
-                       <a href='#'>
+                       <p>
                             <SelectOutlined  className='icon'/>
                            <span className='title'>Select</span>
-                       </a>
+                       </p>
                    </li>
                    <li onClick={this.handleIntersection.bind(this)}>
-                       <a href='#'>
+                       <p>
                             <ScissorOutlined className='icon'/>
                            <span className='title'>Intersect</span>
-                       </a>
+                       </p>
                    </li>
                    <li onClick={this.toggleGrid.bind(this)}>
-                       <a href='#'>
+                       <p>
                             <TableOutlined className='icon'/>
                            <span className='title'>Grid</span>
-                       </a>
+                       </p>
                    </li>
                    <li onClick={this.deleteCurves.bind(this)}>
-                       <a href='#'>
+                       <p>
                             <DeleteOutlined className='icon'/>
                            <span className='title'>Delete</span>
-                       </a>
+                       </p>
                    </li>
                    <hr className="solid"/>
                    <li>
-                       <a href='#'>
+                       <p>
                             <PlusSquareOutlined className='icon'/>
                            <span className='title'>Create Room</span>
-                       </a>
+                       </p>
                    </li>
-                   <li>
-                       <a href='#'>
+                   <li onClick={this.handleJoinRoom.bind(this)}>
+                       <p>
                             <ApiOutlined className='icon' />
                            <span className='title'>Join Room</span>
-                       </a>
+                       </p>
                    </li>
                    <hr className="solid"/>
                </ul>

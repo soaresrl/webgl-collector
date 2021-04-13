@@ -23,13 +23,15 @@
     right: 0;
 }
 
- .grid-snap {
+.grid-snap {
     margin: 2px;
 }
 
 .grid-snap span{
     margin: 0;
     padding: 0;
+    color: #ffffff;
+    font-family: 'Courier New', Courier, monospace;
     display: inline;
     font-size: 15px;
 }
