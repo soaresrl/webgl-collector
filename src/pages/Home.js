@@ -5,6 +5,7 @@ import SideMenu from '../components/Menu/SideMenu';
 import { Checkbox } from 'antd';
 import './Home.css';
 import RoomModal from '../components/RoomModal';
+import CameraOptions from '../components/CameraOptions';
 
 export default class Home extends Component {
     constructor(props){
@@ -41,6 +42,7 @@ export default class Home extends Component {
                     <div className='content'> 
                         <SideMenu roomModalRef = {this.roomModalRef} canvasRef= {this.canvasRef} model={this.props.model} changeMouseAction={this.changeMouseAction}/>
                         <Canvas ref={this.canvasRef} model={this.props.model} mouseAction={this.state.mouseAction}/>
+                        <CameraOptions  canvasRef= {this.canvasRef} model={this.props.model}/>
                         <div className='grid-options'>
                             <Checkbox onChange={this.toggleSnap.bind(this)} className='grid-snap'>Snap</Checkbox>
                             <input placeholder='1.0' className='grid-input-x'/>

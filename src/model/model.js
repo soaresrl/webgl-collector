@@ -22,10 +22,10 @@ class model {
             bbox.xmax = 10.0;
             return;
         }
-        this.curves[0].getBoundingBox(bbox);
+        this.curves[0].getBoundBox(bbox);
         for (let i = 0; i < this.curves.length; i++) {
-            let bbox_c;
-            this.curves[i].getBoundingBox(bbox_c)
+            let bbox_c = {};
+            this.curves[i].getBoundBox(bbox_c)
             if (bbox_c.xmin < bbox.xmin) {
                 bbox.xmin = bbox_c.xmin;
             }

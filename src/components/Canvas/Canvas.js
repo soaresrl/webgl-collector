@@ -23,10 +23,10 @@ export default class Canvas extends Component {
         this.grid = new Grid();
 
         // Set viewport dimensions for orthographic projection
-        this.left = -5;
-        this.right = 5;
-        this.top = 5;
-        this.bottom = -5;
+        this.left = -5.0;
+        this.right = 5.0;
+        this.top = 5.0;
+        this.bottom = -5.0;
 
         this.mouseMoveTol = 2;
         this.pickTolFac = 0.01;
@@ -87,7 +87,7 @@ export default class Canvas extends Component {
             2.0 / (right - left), 0, 0, -(right + left) / (right - left),
             0, 2.0 / (top - bottom), 0, -(top + bottom) / (top - bottom),
             0, 0, -2.0 / (far - near), -(far + near) / (far - near),
-            0, 0, 0, 1,
+            0, 0, 0, 1.0,
         ];
 
         // Set the matrix.
@@ -289,6 +289,8 @@ export default class Canvas extends Component {
         this.left = cx - (sizex / 2);
         this.top = cy + (sizey / 2);
         this.bottom = cy - (sizey / 2);
+
+        this.glOrtho(this.left, this.right, this.bottom, this.top, -1, 1);
     }
 
     resizeGL(){
@@ -301,7 +303,6 @@ export default class Canvas extends Component {
         this.gl.viewport(0,0, this.gl.canvas.width, this.gl.canvas.height);
 
         this.scaleWorldWindow(1.0);
-        this.glOrtho(this.left, this.right, this.bottom, this.top, -1, 1);
 
         this.paint();
     }
@@ -484,9 +485,40 @@ export default class Canvas extends Component {
         }
     }
 
+    panWorldWindow(panFacX, panFacY){
+        let deslocX, deslocY;
+        const panX = (this.right - this.left) * panFacX;
+        const panY = (this.top - this.bottom) * panFacY;
+
+        deslocX = panX - (this.right - this.left);
+        deslocY = panY - (this.top - this.bottom);
+
+        this.right = this.right - deslocX;
+        this.left = this.left - deslocX;
+
+        this.top = this.top - deslocY;
+        this.bottom = this.bottom - deslocY;
+
+        this.glOrtho(this.left, this.right, this.bottom, this.top, -1, 1);
+    }
+
+    fitWorldToViewport(){
+        let bbox = {};
+        this.props.model.getBoundingBox(bbox);
+
+        this.left = bbox.xmin;
+        this.right = bbox.xmax;
+        this.top = bbox.ymax;
+        this.bottom = bbox.ymin;
+
+        this.scaleWorldWindow(1.1);
+
+        this.paint();
+    }
+
     paint(){    
 
-        this.gl.clearColor(0, 0, 0, 1);
+        this.gl.clearColor(0.1, 0.1, 0.1, 1);
         this.gl.clear(this.gl.COLOR_BUFFER_BIT);
 
         this.makeDisplayCurves();

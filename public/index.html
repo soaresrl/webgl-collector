@@ -3,7 +3,10 @@
     <head>
         <meta charset="UTF-8">
         <meta content="width=device-width, initial-scale=1.0" name="viewport"> 
-        <title>Web Collector PUC-Rio</title>
+        <title>Web Collector</title>
+        <link rel="icon" 
+                type="image/png" 
+                href="../src/assets/images/puc.png" />
     </head>
     <body style="margin: 0; padding: 0;">
         <div id="root"></div>
@@ -14,12 +17,14 @@
         </script>
 
         <script id="vertex-shader-2d" type="notjs">
-            attribute vec4 a_position;
+            attribute vec3 a_position;
+            vec4 u_position;
             uniform vec4 u_color;
             uniform mat4 u_projection;
         
             void main() {
-            gl_Position = u_projection*a_position;
+            u_position = vec4(a_position.xyz, 1.0);
+            gl_Position = u_projection*u_position;
             gl_PointSize = 1.0;
             }
         
