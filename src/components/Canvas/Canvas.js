@@ -220,7 +220,7 @@ export default class Canvas extends Component {
         let y = this.bottom;
 
         const {gridX, gridY} = this.grid.getGridSpace();
-
+        console.log(gridX, gridY)
         x = oX - (parseInt((oX - this.left)/gridX) * gridX) - gridX;
 
         while (x <= this.right) {

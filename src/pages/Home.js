@@ -34,6 +34,22 @@ export default class Home extends Component {
         })
     }
 
+    changeSnapDataX(e){
+        const {gridY} = this.canvasRef.current.grid.getGridSpace();
+        this.canvasRef.current.grid.setSnapData(parseFloat(e.target.value), 
+                                                parseFloat(gridY), 
+                                                this.canvasRef.current.state.is_SnapOn);
+        this.canvasRef.current.paint();
+    }
+
+    changeSnapDataY(e){
+        const {gridX} = this.canvasRef.current.grid.getGridSpace();
+        this.canvasRef.current.grid.setSnapData(parseFloat(gridX), 
+                                                parseFloat(e.target.value), 
+                                                this.canvasRef.current.state.is_SnapOn);
+        this.canvasRef.current.paint();
+    }
+
     render(){
         return(
             <>
@@ -45,8 +61,8 @@ export default class Home extends Component {
                         <CameraOptions  canvasRef= {this.canvasRef} model={this.props.model}/>
                         <div className='grid-options'>
                             <Checkbox onChange={this.toggleSnap.bind(this)} className='grid-snap'>Snap</Checkbox>
-                            <input placeholder='1.0' className='grid-input-x'/>
-                            <input placeholder='1.0' className='grid-input-y'/>
+                            <input onChange={this.changeSnapDataX.bind(this)} placeholder='1.0' className='grid-input-x'/>
+                            <input onChange={this.changeSnapDataY.bind(this)} placeholder='1.0' className='grid-input-y'/>
                         </div>
                     </div>
                 </div>
