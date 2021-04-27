@@ -69,12 +69,16 @@ export default class Canvas extends Component {
 
     glOrtho(left, right, bottom, top, near, far){
         
-        let matrix = [
-            2.0 / (right - left), 0, 0, -(right + left) / (right - left),
-            0, 2.0 / (top - bottom), 0, -(top + bottom) / (top - bottom),
-            0, 0, -2.0 / (far - near), -(far + near) / (far - near),
-            0, 0, 0, 1.0,
-        ];
+        let matrix =[
+            2 / (right - left), 0, 0, 0,
+            0, 2 / (top - bottom), 0, 0,
+            0, 0, 2 / (near - far), 0,
+       
+            (left + right) / (left - right),
+            (bottom + top) / (bottom - top),
+            (near + far) / (near - far),
+            1,
+          ];
 
         // Set the matrix.
         this.gl.uniformMatrix4fv(this.projectionLocation, false, new Float32Array(matrix));
@@ -140,7 +144,7 @@ export default class Canvas extends Component {
             this.gl.vertexAttribPointer(this.positionAttributeLocation, 3, this.gl.FLOAT, false, 0, 0);
 
             this.gl.uniform4fv(this.colorLocation, [0.0,0.0,1.0,1]);
-            this.gl.uniform1f(this.pointSizeLocation, 3.0);
+            this.gl.uniform1f(this.pointSizeLocation, 5.0);
 
             this.gl.drawArrays(this.gl.POINTS, 0, pCoords.length/3);
 
