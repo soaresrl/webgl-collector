@@ -1,7 +1,6 @@
 import React, { Component } from 'react'
 import curveCollector from '../../curves/curveCollector';
 import Grid from '../../grid/grid';
-//import model from '../../model/model';
 import GLUtils from '../../Utils/GLUtils';
 import './Canvas.css'
 
@@ -54,25 +53,12 @@ export default class Canvas extends Component {
         this.positionLocation = this.gl.getAttribLocation(this.program, 'a_position');
         this.colorLocation = this.gl.getUniformLocation(this.program, 'u_color');
         this.projectionLocation = this.gl.getUniformLocation(this.program, 'u_projection');
+        this.pointSizeLocation = this.gl.getUniformLocation(this.program, 'u_pointSize');
 
         this.resizeGL();
-        /* 
-        this.gl.clearColor(0, 0, 0, 1);
-        this.gl.clear(this.gl.COLOR_BUFFER_BIT); */
 
         this.paint();
-        //this.makeDisplayGrid();
 
-        /* this.gl.uniform4fv(this.colorLocation, new Float32Array([1,0,0,1]));
-
-        const positionBuffer = this.gl.createBuffer();
-        this.gl.bindBuffer(this.gl.ARRAY_BUFFER, positionBuffer);
-        this.gl.bufferData(this.gl.ARRAY_BUFFER, new Float32Array([0.0, 0.0, 0.0, 0.5, 0.5, 0.0]), this.gl.STATIC_DRAW);
-
-        this.gl.vertexAttribPointer(this.positionLocation, 3, this.gl.FLOAT, false, 0, 0);
-        this.gl.enableVertexAttribArray(this.positionLocation);
-
-        this.gl.drawArrays(this.gl.LINES, 0, 2); */
         window.addEventListener('resize', this.resizeGL.bind(this));
         canvas.addEventListener('contextmenu', (e)=>{e.preventDefault()});
     }
@@ -122,11 +108,11 @@ export default class Canvas extends Component {
 
             // If curve is selected draw it in red, else draw it in blue
             if (curve.isSelected()) {
-                this.gl.uniform4fv(this.colorLocation, [1,0,0,1]);
+                this.gl.uniform4fv(this.colorLocation, [1.0,0.0,0.0,1]);
             }
             else
             {
-                this.gl.uniform4fv(this.colorLocation, [0,0,1,1]);
+                this.gl.uniform4fv(this.colorLocation, [0.20,0.33,0.45,1]);
             }
 
             // Stores the vertices of the curve to pass to the buffer
@@ -143,9 +129,20 @@ export default class Canvas extends Component {
             this.gl.enableVertexAttribArray(this.positionAttributeLocation);
             this.gl.vertexAttribPointer(this.positionAttributeLocation, 3, this.gl.FLOAT, false, 0, 0);
     
-            //this.gl.uniform4fv(this.colorLocation, [0,0,0,0]);
-    
             this.gl.drawArrays(this.gl.LINES, 0, pCoords.length/3);
+
+             // Draw line points
+            const ptsPositionBuffer = this.gl.createBuffer();
+            this.gl.bindBuffer(this.gl.ARRAY_BUFFER, ptsPositionBuffer);
+            this.gl.bufferData(this.gl.ARRAY_BUFFER, new Float32Array(pCoords), this.gl.STATIC_DRAW);
+
+            this.gl.enableVertexAttribArray(this.positionAttributeLocation);
+            this.gl.vertexAttribPointer(this.positionAttributeLocation, 3, this.gl.FLOAT, false, 0, 0);
+
+            this.gl.uniform4fv(this.colorLocation, [0.0,0.0,1.0,1]);
+            this.gl.uniform1f(this.pointSizeLocation, 3.0);
+
+            this.gl.drawArrays(this.gl.POINTS, 0, pCoords.length/3);
 
         });
     } 
@@ -173,7 +170,7 @@ export default class Canvas extends Component {
         this.gl.enableVertexAttribArray(this.positionAttributeLocation);
         this.gl.vertexAttribPointer(this.positionAttributeLocation, 3, this.gl.FLOAT, false, 0, 0);
 
-        this.gl.uniform4fv(this.colorLocation, [1,1,1,1]);
+        this.gl.uniform4fv(this.colorLocation, [1.0,0.0,0.0,1]);
 
         this.gl.drawArrays(this.gl.LINES, 0, pCoords.length/3);
     }
@@ -246,7 +243,7 @@ export default class Canvas extends Component {
         this.gl.vertexAttribPointer(this.positionAttributeLocation, 3, this.gl.FLOAT, false, 0, 0);
 
         this.gl.uniform4fv(this.colorLocation, [0,0,0,0]);
-
+        this.gl.uniform1f(this.pointSizeLocation, 1.0);
         this.gl.drawArrays(this.gl.POINTS, 0, vertices.length/3);
 
         // Draw grid center lines

@@ -44,3 +44,10 @@
     margin: 2px;
     width: 25px;
 } 
+
+.connect{
+    position:absolute;
+    margin: 0;
+    bottom:0;
+    left: 80px;   
+}

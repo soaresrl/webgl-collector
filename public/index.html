@@ -21,11 +21,12 @@
             vec4 u_position;
             uniform vec4 u_color;
             uniform mat4 u_projection;
+            uniform float u_pointSize;
         
             void main() {
             u_position = vec4(a_position.xyz, 1.0);
             gl_Position = u_projection*u_position;
-            gl_PointSize = 1.0;
+            gl_PointSize = u_pointSize;
             }
         
         </script>
