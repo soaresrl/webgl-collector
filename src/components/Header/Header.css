@@ -27,5 +27,49 @@
 }
 
 .header-project-name {
-    float:right;
+    float:left;
+}
+
+.icon-container{
+    position: absolute;
+    right: 5px;
+}
+
+.icon-container span{
+    padding: 0;
+    border: 0px;
+    display: inline-block;
+}
+
+.cloud-item {
+    margin-right: 5px;
+    display: inline-block;
+}
+
+.icon-container .connected {
+    color: green;
+}
+
+.icon-container p{
+    font-family: 'Courier New', Courier, monospace;
+    color: #909F9A;
+    font-size: 12px;
+    padding-left: 20px;
+    margin-top: 15px;
+    margin-right: 10px;
+    display: inline-block;
+}
+
+.icon-container .disconnected {
+    color: red;
+}
+
+@media only screen and (max-width: 800px) {
+    .header-content .header-title {
+        display: none;
+    }
+    .header-content .header-project-name {
+        position: absolute;
+        left: 30%;
+    }
 }

@@ -27,7 +27,7 @@ export default class Canvas extends Component {
         this.top = 5.0;
         this.bottom = -5.0;
 
-        this.mouseMoveTol = 2;
+        this.mouseMoveTol = 1;
         this.pickTolFac = 0.01;
 
     }
@@ -220,7 +220,6 @@ export default class Canvas extends Component {
         let y = this.bottom;
 
         const {gridX, gridY} = this.grid.getGridSpace();
-        console.log(gridX, gridY)
         x = oX - (parseInt((oX - this.left)/gridX) * gridX) - gridX;
 
         while (x <= this.right) {
@@ -429,6 +428,7 @@ export default class Canvas extends Component {
                     this.props.model.insertCurve(curve);
                     this.collector.endCurveCollection();
                     this.paint();
+                    this.props.Api.insertCurve(curve);
                     //this.socket.emit('insert-curve', curve);
                 }
                 break;
@@ -504,17 +504,19 @@ export default class Canvas extends Component {
     }
 
     fitWorldToViewport(){
-        let bbox = {};
-        this.props.model.getBoundingBox(bbox);
+        if (!this.props.model.isEmpty()) {
+            let bbox = {};
+            this.props.model.getBoundingBox(bbox);
 
-        this.left = bbox.xmin;
-        this.right = bbox.xmax;
-        this.top = bbox.ymax;
-        this.bottom = bbox.ymin;
+            this.left = bbox.xmin;
+            this.right = bbox.xmax;
+            this.top = bbox.ymax;
+            this.bottom = bbox.ymin;
 
-        this.scaleWorldWindow(1.1);
+            this.scaleWorldWindow(1.1);
 
-        this.paint();
+            this.paint();
+        }
     }
 
     paint(){    

@@ -27,6 +27,10 @@ export default class Home extends Component {
             });
     }
 
+    updateCanvas(){
+        this.canvasRef.current.paint();
+    }
+
     toggleSnap(){
         this.canvasRef.current.setState({
             ...this.canvasRef.state,
@@ -54,10 +58,10 @@ export default class Home extends Component {
         return(
             <>
                 <div className='container'>
-                    <Header/>
+                    <Header room={this.props.room} connected={this.props.connected}/>
                     <div className='content'> 
-                        <SideMenu roomModalRef = {this.roomModalRef} canvasRef= {this.canvasRef} model={this.props.model} changeMouseAction={this.changeMouseAction}/>
-                        <Canvas ref={this.canvasRef} model={this.props.model} mouseAction={this.state.mouseAction}/>
+                        <SideMenu roomModalRef = {this.roomModalRef} Api={this.props.Api} canvasRef= {this.canvasRef} model={this.props.model} changeMouseAction={this.changeMouseAction}/>
+                        <Canvas ref={this.canvasRef} Api={this.props.Api} model={this.props.model} mouseAction={this.state.mouseAction}/>
                         <CameraOptions  canvasRef= {this.canvasRef} model={this.props.model}/>
                         <div className='grid-options'>
                             <Checkbox onChange={this.toggleSnap.bind(this)} className='grid-snap'>Snap</Checkbox>
@@ -67,7 +71,7 @@ export default class Home extends Component {
                     </div>
                 </div>
 
-                <RoomModal ref={this.roomModalRef} />
+                <RoomModal Api={this.props.Api} ref={this.roomModalRef} />
             </>
         );
     }

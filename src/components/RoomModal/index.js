@@ -1,6 +1,7 @@
 import React, { Component } from "react"
 import Draggable from 'react-draggable'
 import {CloseSquareOutlined} from '@ant-design/icons'
+import {Button} from 'antd'
 import './RoomModal.css'
 
 export default class RoomModal extends Component{
@@ -10,6 +11,7 @@ export default class RoomModal extends Component{
 
         this.state = {
             isModalVisible: false,
+            roomToken: ''
         }
     }
 
@@ -20,8 +22,15 @@ export default class RoomModal extends Component{
         })
     }
 
-    handleOk(){
-
+    handleJoinRoom(){
+        this.props.Api.joinRoom(this.state.roomToken);
+    }
+    
+    handleInputChange(e){
+        this.setState({
+            ...this.state,
+            roomToken: e.target.value
+        })
     }
 
     render(){
@@ -35,9 +44,9 @@ export default class RoomModal extends Component{
                     <hr className="solid"/>
                     <div className='content'>
                         <p> Token </p>
-                        <input placeholder="Type the room's token..."/>
-                        <button>Join</button>
-                        <button onClick={this.handleCancel.bind(this)}>Cancel</button>
+                        <input onChange={this.handleInputChange.bind(this)} placeholder="Type the room's token..."/>
+                        <Button onClick={this.handleCancel.bind(this)} danger >Cancel</Button>
+                        <Button onClick={this.handleJoinRoom.bind(this)} type='primary'>Join</Button>
                     </div>
                 </div>
             </Draggable>

@@ -2,7 +2,6 @@
     position: absolute;
     display: grid;
     grid-template-rows: auto auto;
-    border-radius: 10px;
     top: 90px;
     left: 200px;
     background:  #C8C2C2;
@@ -10,7 +9,6 @@
 
 .join-room .title{
     display: block;
-    border-radius: 10px;
     display: flex;
     background: #345574;
     margin: 0;

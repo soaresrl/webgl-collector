@@ -24,6 +24,7 @@
     margin: 0;
     height: 30px;
     padding-top: 10px;
+    padding-bottom: 10px;
     position: relative;
     width: 100%;
     list-style: none;
@@ -47,10 +48,6 @@
 
 .navigation ul li p span {
     color: #6A8BB4;
-}
-
-.title {
-    margin-top:0px;
 }
 
 .navigation ul li p .icon {
