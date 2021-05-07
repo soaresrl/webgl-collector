@@ -6,8 +6,9 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "webpack-dev-server": "webpack-dev-server",
+    "start": "node server.js",
     "dev": "webpack serve --mode=development",
-    "prod": "webpack --mode=production"
+    "build": "webpack --mode=production"
   },
   "author": "Rodrigo Soares",
   "license": "ISC",
