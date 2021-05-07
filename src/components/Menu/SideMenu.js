@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import {LineOutlined, SelectOutlined, ApiOutlined, PlusSquareOutlined, TableOutlined,
-        DeleteOutlined} from '@ant-design/icons'
+        DeleteOutlined, ScissorOutlined} from '@ant-design/icons'
 import './Menu.css'
 
 export default class SideMenu extends Component {
@@ -9,46 +9,82 @@ export default class SideMenu extends Component {
         this.props.changeMouseAction(mouseAction);
     }
 
+    deleteCurves(){
+        this.props.model.delSelectedCurves();
+        this.props.Api.delSelectedCurves()
+        this.props.canvasRef.current.paint();
+    }
+
+    toggleGrid(){
+        this.props.canvasRef.current.setState({
+            ...this.props.canvasRef.current.state,
+            viewGrid: !this.props.canvasRef.current.state.viewGrid
+        })
+    }
+
+    handleIntersection(){
+        this.props.model.intersectTwoCurves();
+        this.props.canvasRef.current.paint();
+        this.props.Api.intersect();
+    }
+
+    handleCreateRoom(){
+        this.props.Api.createRoom();
+    }
+
+    handleJoinRoom(){
+        this.props.roomModalRef.current.setState({
+            ...this.props.roomModalRef.current.state,
+            isModalVisible: true
+        })
+    }
+
     render() {
         return (
            <div className='navigation'>
                <ul>
                    <li onClick={()=>{this.changeMouse('COLLECTION')}}>
-                       <a href='#'>
+                       <p>
                            <LineOutlined className='icon'/>
-                           <span className='title'>Line</span>
-                       </a>
+                           <span>Line</span>
+                       </p>
                    </li>
                    <li onClick={()=>{this.changeMouse('SELECTION')}}>
-                       <a href='#'>
+                       <p>
                             <SelectOutlined  className='icon'/>
-                           <span className='title'>Select</span>
-                       </a>
+                           <span>Select</span>
+                       </p>
                    </li>
-                   <li>
-                       <a href='#'>
+                   <li onClick={this.handleIntersection.bind(this)}>
+                       <p>
+                            <ScissorOutlined className='icon'/>
+                           <span>Intersect</span>
+                       </p>
+                   </li>
+                   <li onClick={this.toggleGrid.bind(this)}>
+                       <p>
                             <TableOutlined className='icon'/>
-                           <span className='title'>Grid</span>
-                       </a>
+                           <span>Grid</span>
+                       </p>
                    </li>
-                   <li>
-                       <a href='#'>
+                   <li onClick={this.deleteCurves.bind(this)}>
+                       <p>
                             <DeleteOutlined className='icon'/>
-                           <span className='title'>Delete</span>
-                       </a>
+                           <span>Delete</span>
+                       </p>
                    </li>
                    <hr className="solid"/>
-                   <li>
-                       <a href='#'>
+                   <li onClick={this.handleCreateRoom.bind(this)}>
+                       <p>
                             <PlusSquareOutlined className='icon'/>
-                           <span className='title'>Create Room</span>
-                       </a>
+                           <span>Create Room</span>
+                       </p>
                    </li>
-                   <li>
-                       <a href='#'>
+                   <li onClick={this.handleJoinRoom.bind(this)}>
+                       <p>
                             <ApiOutlined className='icon' />
-                           <span className='title'>Join Room</span>
-                       </a>
+                           <span>Join Room</span>
+                       </p>
                    </li>
                    <hr className="solid"/>
                </ul>

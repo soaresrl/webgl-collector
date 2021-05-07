@@ -1,5 +1,4 @@
 .navigation {
-    border-radius: 10px;
     position: relative;
     width: 60px;
     height: 100%;
@@ -9,7 +8,7 @@
 }
 
 .navigation:hover {
-    width: 300px;
+    width: 250px;
 }
 
 .navigation ul {
@@ -23,7 +22,9 @@
 
 .navigation ul li {
     margin: 0;
-    padding: 0;
+    height: 30px;
+    padding-top: 10px;
+    padding-bottom: 10px;
     position: relative;
     width: 100%;
     list-style: none;
@@ -33,36 +34,35 @@
     background: #909F9A;
 }
 
-.navigation ul li a {
+.navigation ul li p {
     position: relative;
+    margin: 0;
     display: block;
+    height: 20px;
     width: 100%;
     display: flex;
     text-decoration: none;
     color: #6A8BB4;
+    cursor: pointer;
 }
 
-.navigation ul li a span {
+.navigation ul li p span {
     color: #6A8BB4;
 }
 
-.title {
-    margin-top: 15px;
-}
-
-.navigation ul li a .icon {
+.navigation ul li p .icon {
     margin: 0;
     padding: 0;
     position: relative;
     display: block;
     min-width: 60px;
-    height: 60px;
-    line-height: 60px;
+    height: 20px;
+    line-height: 20px;
     text-align: center;
 }
 
-hr {
-    margin: 0;
+.navigation hr {
+    margin: 5px;
     padding: 0;
     border-top: 1px solid #ffffff;
 }

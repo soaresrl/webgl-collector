@@ -101,13 +101,13 @@ class line extends curve{
 
     closestPoint(obj){
         let vx = this.x2 - this.x1;
-        let vy = this.x2 - this.x1;
+        let vy = this.y2 - this.y1;
         let t = (vx*(obj.x-this.x1) + vy*(obj.y-this.y1)) / (vx*vx + vy*vy);
         let xOn, yOn;
         if (t < 0.0) {
             xOn = this.x1;
             yOn = this.y1;
-        } else if (t > 0.0)
+        } else if (t > 1.0)
         {
             xOn = this.x2;
             yOn = this.y2;

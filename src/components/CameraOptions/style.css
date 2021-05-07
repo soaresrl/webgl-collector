@@ -1,0 +1,28 @@
+.options-container{
+    position:absolute;
+    top: 70px;
+    right: 5px;
+}
+
+.option{    
+    height: 30px;
+    width: 30px;
+    background-color: #C8C2C2;
+    border-radius: 50%;
+    display: inline-block;
+    align-items: center;
+    margin: 2px;
+}
+
+.option:hover{    
+    background: #909F9A;
+}
+
+.option .icon {
+    margin: 0;
+    padding: 0;
+    top: 7px;
+    position: relative;
+    display: block;
+    text-align: center;
+}

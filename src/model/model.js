@@ -22,10 +22,10 @@ class model {
             bbox.xmax = 10.0;
             return;
         }
-        this.curves[0].getBoundingBox(bbox);
+        this.curves[0].getBoundBox(bbox);
         for (let i = 0; i < this.curves.length; i++) {
-            var bbox_c;
-            this.curves[i].getBoundingBox(bbox_c)
+            let bbox_c = {};
+            this.curves[i].getBoundBox(bbox_c)
             if (bbox_c.xmin < bbox.xmin) {
                 bbox.xmin = bbox_c.xmin;
             }
@@ -49,12 +49,12 @@ class model {
             return false;
         }
 
-        var xC, yC;
-        var xClst = pos.x;
-        var yClst = pos.y;
-        var id_target = -1;
-        var dmin = pick_tol;
-        var d;
+        let xC, yC;
+        let xClst = pos.x;
+        let yClst = pos.y;
+        let id_target = -1;
+        let dmin = pick_tol;
+        let d;
 
         for (let i = 0; i < this.curves.length; i++) {
             xC = this.curves[i].getXinit();
@@ -113,8 +113,8 @@ class model {
             return;
         }
 
-        var inFence;
-        var bbox = {};
+        let inFence;
+        let bbox = {};
         this.curves.forEach(curve => {
             curve.getBoundBox(bbox);
             (bbox.xmin < xmin || bbox.xmax > xmax || bbox.ymin < ymin || bbox.ymax > ymax) ? inFence = false : inFence = true;
@@ -124,13 +124,34 @@ class model {
         });
     }
 
+    selectPick(x, y, tol){
+        if (this.curves.length < 1) {
+            return;
+        }
+
+        let xC, yC;
+        let id_target = -1;
+        let dmin = tol;
+        this.curves.forEach(curve => {
+            xC = x;
+            yC = y;
+
+            const d = curve.closestPoint({x: xC, y: yC});
+
+            if (d < dmin) {
+                dmin = d;
+                curve.setSelected(!curve.isSelected());
+            }
+        });
+    }
+
     intersectTwoCurves(){
         if (this.curves.length < 1) {
             return
         }
 
-        var id_target12 = -1;
-        var id_target34 = -1;
+        let id_target12 = -1;
+        let id_target34 = -1;
 
         for (let i = 0; i < this.curves.length; i++) {
             if (this.curves[i].isSelected()) {
@@ -161,33 +182,34 @@ class model {
         }
 
         //Get lines' points
-        var pts12 = this.curves[id_target12].getPoints();
-        var pts34 = this.curves[id_target34].getPoints();
-        var pt1 = pts12[0];
-        var pt2 = pts12[1];
-        var pt3 = pts34[0];
-        var pt4 = pts34[1];
+        let pts12 = this.curves[id_target12].getPoints();
+        let pts34 = this.curves[id_target34].getPoints();
+        let pt1 = pts12[0];
+        let pt2 = pts12[1];
+        let pt3 = pts34[0];
+        let pt4 = pts34[1];
 
         //Compute intersection between two lines
-        var pi;
-        var ti_12 = 0.0;
-        var ti_34 = 0.0;
+        let pi;
+        let ti_12 = 0.0;
+        let ti_34 = 0.0;
 
-        var ref_obj = {p1: pt1, p2: pt2, p3: pt3, p4: pt4, pi: pi, t12: ti_12, t34: ti_34};
+        let ref_obj = {p1: pt1, p2: pt2, p3: pt3, p4: pt4, pi: pi, t12: ti_12, t34: ti_34};
 
-        var status = computeSegmentSegmentIntersection(ref_obj);
-        var deleteLine1 = false;
-        var deleteLine2 = false;
-        var createdLine = false;
+        let status = computeSegmentSegmentIntersection(ref_obj);
+        let deleteLine1 = false;
+        let deleteLine2 = false;
+        let createdLine = false;
+        let ln_a, ln_b, ln_c, ln_d;
         switch (status) {
             case IntersectionType.DO_NOT_INTERSECT:
                 alert("Cannot peform instersection \n The two selected lines do not intersect")
                 break;
             case IntersectionType.DO_INTERSECT:
-                var ln_a = new line(ref_obj.p1.x, ref_obj.p1.y, ref_obj.pi.x, ref_obj.pi.y);
-                var ln_b = new line(ref_obj.pi.x, ref_obj.pi.y, ref_obj.p2.x, ref_obj.p2.y);
-                var ln_c = new line(ref_obj.p3.x, ref_obj.p3.y, ref_obj.pi.x, ref_obj.pi.y);
-                var ln_d = new line(ref_obj.pi.x, ref_obj.pi.y, ref_obj.p4.x, ref_obj.p4.y);
+                ln_a = new line(ref_obj.p1.x, ref_obj.p1.y, ref_obj.pi.x, ref_obj.pi.y);
+                ln_b = new line(ref_obj.pi.x, ref_obj.pi.y, ref_obj.p2.x, ref_obj.p2.y);
+                ln_c = new line(ref_obj.p3.x, ref_obj.p3.y, ref_obj.pi.x, ref_obj.pi.y);
+                ln_d = new line(ref_obj.pi.x, ref_obj.pi.y, ref_obj.p4.x, ref_obj.p4.y);
                 deleteLine1 = true;
                 deleteLine2 = true;
                 createdLine = true;
