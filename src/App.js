@@ -25,7 +25,7 @@ class App extends Component {
 
     componentDidMount(){
         this.Api = new Api();
-        this.Api.connect("https://curve-colector-api.herokuapp.com/");
+        this.Api.connect("localhost:3000");
         this.Api.listen(this.model, this.updateConnection, this.handleRoomCreated, this.updateCanvas);
     }
 

@@ -11,6 +11,7 @@ export default class SideMenu extends Component {
 
     deleteCurves(){
         this.props.model.delSelectedCurves();
+        this.props.Api.delSelectedCurves()
         this.props.canvasRef.current.paint();
     }
 
@@ -24,6 +25,7 @@ export default class SideMenu extends Component {
     handleIntersection(){
         this.props.model.intersectTwoCurves();
         this.props.canvasRef.current.paint();
+        this.props.Api.intersect();
     }
 
     handleCreateRoom(){

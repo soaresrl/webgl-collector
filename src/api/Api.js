@@ -39,12 +39,17 @@ export default class Api {
             updateCanvas();
         });
 
-        this.socket.on("update-model", (curves) => {
-            for(curve of curves){
+        this.socket.on("update-model", (_model) => {
+            const curves = []
+
+            _model.curves.forEach(curve => {
                 let new_line = new Line(curve.x1, curve.y1, curve.x2, curve.y2);
                 new_line.selected = curve.selected;
-                model.curves.push(new_line);
-            }
+
+                curves.push(new_line);
+            });
+            model.curves = [];
+            model.curves = curves;
 
             updateCanvas();
         });
@@ -61,4 +66,21 @@ export default class Api {
     joinRoom(token){
         this.socket.emit('join-room', token);
     }
+
+    selectFence(xmin, xmax, ymin, ymax){
+        this.socket.emit('select-fence', xmin, xmax, ymin, ymax);
+    }
+
+    selectPick(x, y, tol){
+        this.socket.emit('select-pick', x, y, tol);
+    }
+
+    delSelectedCurves(){
+        this.socket.emit('delete-curves');
+    }
+
+    intersect(){
+        this.socket.emit('intersect')
+    }
+
 }

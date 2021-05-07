@@ -354,8 +354,8 @@ export default class Canvas extends Component {
                             (this.top - this.bottom));
 
                             const tol = max_size*this.pickTolFac;
-
                             this.props.model.selectPick(this.pt1W.x, this.pt1W.y, tol);
+                            this.props.Api.selectPick(this.pt1W.x, this.pt1W.y, tol);
                         }
                         else
                         {
@@ -365,6 +365,7 @@ export default class Canvas extends Component {
                             const ymax = (this.pt0W.y > this.pt1W.y) ? this.pt0W.y : this.pt1W.y;
                             //this.socket.emit('select-fence', xmin, xmax, ymin, ymax);
                             this.props.model.selectFence(xmin, xmax, ymin, ymax);
+                            this.props.Api.selectFence(xmin, xmax, ymin, ymax);
                         }
                     }
                     this.paint();
