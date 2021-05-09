@@ -21,12 +21,13 @@ class App extends Component {
         this.updateConnection = this.updateConnection.bind(this);
         this.handleRoomCreated = this.handleRoomCreated.bind(this);
         this.updateCanvas = this.updateCanvas.bind(this);
+        /* this.testDisplayPatches = this.testDisplayPatches.bind(this); */
     }
 
     componentDidMount(){
         this.Api = new Api();
-        this.Api.connect("https://curve-colector-api.herokuapp.com/");
-        this.Api.listen(this.model, this.updateConnection, this.handleRoomCreated, this.updateCanvas);
+        this.Api.connect("http://127.0.0.1:5000/");
+        this.Api.listen(this.model, this.updateConnection, this.handleRoomCreated, this.updateCanvas, /* this.testDisplayPatches */);
     }
 
     updateConnection(){
@@ -36,16 +37,20 @@ class App extends Component {
         })
     }
 
-    handleRoomCreated(token){
+    handleRoomCreated(room_id){
         this.setState({
             ...this.state,
             room: {
                 hasRoom: true,
-                token: token ? token : this.Api.socket.id
+                token: room_id
             }
         });
 
     }
+
+    /* testDisplayPatches(pts, triangs){
+        this.homeRef.current.canvasRef.current.makeDisplayPatches(pts, triangs);
+    } */
 
     updateCanvas(){
         this.homeRef.current.updateCanvas();

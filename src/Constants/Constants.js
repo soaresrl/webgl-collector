@@ -28,3 +28,14 @@ export const CURVE_TYPE = {
     POLYLINE: 1,
     CIRCLE: 2
 }
+
+export const COLORS = {
+    PATCH_COLORS: {
+        default: [0.4, 1.0, 0.6, 1.0],
+        selected: [0.6, 1.0, 0.4, 1.0],
+    },
+    CURVE_COLORS: {
+        default: [0.20,0.33,0.45,1],
+        selected: [1.0,0.0,0.0,1],
+    }
+}

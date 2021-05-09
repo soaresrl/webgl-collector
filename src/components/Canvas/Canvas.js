@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import curveCollector from '../../curves/curveCollector';
 import Grid from '../../grid/grid';
 import GLUtils from '../../Utils/GLUtils';
+import {COLORS} from '../../Constants/Constants'
 import './Canvas.css'
 
 export default class Canvas extends Component {
@@ -20,6 +21,8 @@ export default class Canvas extends Component {
         //this.model = new model();
         this.collector = new curveCollector();
         this.grid = new Grid();
+
+        this.triangs = [];
 
         // Set viewport dimensions for orthographic projection
         this.left = -5.0;
@@ -112,11 +115,11 @@ export default class Canvas extends Component {
 
             // If curve is selected draw it in red, else draw it in blue
             if (curve.isSelected()) {
-                this.gl.uniform4fv(this.colorLocation, [1.0,0.0,0.0,1]);
+                this.gl.uniform4fv(this.colorLocation, COLORS.CURVE_COLORS.selected);
             }
             else
             {
-                this.gl.uniform4fv(this.colorLocation, [0.20,0.33,0.45,1]);
+                this.gl.uniform4fv(this.colorLocation, COLORS.CURVE_COLORS.default);
             }
 
             // Stores the vertices of the curve to pass to the buffer
@@ -150,6 +153,40 @@ export default class Canvas extends Component {
 
         });
     } 
+
+    makeDisplayPatches(){
+        this.gl.uniform4fv(this.colorLocation, COLORS.PATCH_COLORS.default);
+
+        let pCoords = []
+
+        for(let i = 0; i < this.props.model.patches.length; i++){
+            const pts = this.props.model.patches[i].pts;
+            const triangs = this.props.model.patches[i].triangs;
+
+            for (let j = 0; j < triangs.length; j++) {
+                pCoords.push(pts[triangs[j][0]].x);
+                pCoords.push(pts[triangs[j][0]].y);
+                pCoords.push(0.0);
+                pCoords.push(pts[triangs[j][1]].x);
+                pCoords.push(pts[triangs[j][1]].y);
+                pCoords.push(0.0);
+                pCoords.push(pts[triangs[j][2]].x);
+                pCoords.push(pts[triangs[j][2]].y);
+                pCoords.push(0.0);
+            }
+
+        }
+
+        const positionBuffer = this.gl.createBuffer();
+        this.gl.bindBuffer(this.gl.ARRAY_BUFFER, positionBuffer);
+        this.gl.bufferData(this.gl.ARRAY_BUFFER, new Float32Array(pCoords), this.gl.STATIC_DRAW);
+
+        this.gl.enableVertexAttribArray(this.positionAttributeLocation);
+        this.gl.vertexAttribPointer(this.positionAttributeLocation, 3, this.gl.FLOAT, false, 0, 0);
+
+        this.gl.drawArrays(this.gl.TRIANGLES, 0, pCoords.length/3);
+
+    }
 
     drawCollectedCurve(){
         if ((!this.collector.isActive()) || (!this.collector.isCollecting())) {
@@ -425,12 +462,10 @@ export default class Canvas extends Component {
 
                 if (endCollection) {
                     const curve = this.collector.getCollectedCurve();
-                    //this.curves.push(curve);
                     this.props.model.insertCurve(curve);
                     this.collector.endCurveCollection();
                     this.paint();
                     this.props.Api.insertCurve(curve);
-                    //this.socket.emit('insert-curve', curve);
                 }
                 break;
         
@@ -525,6 +560,7 @@ export default class Canvas extends Component {
         this.gl.clearColor(0.1, 0.1, 0.1, 1);
         this.gl.clear(this.gl.COLOR_BUFFER_BIT);
 
+        this.makeDisplayPatches();
         this.makeDisplayCurves();
         this.state.viewGrid && this.makeDisplayGrid();
         this.drawCollectedCurve();
