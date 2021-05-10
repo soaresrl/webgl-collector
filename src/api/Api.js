@@ -44,7 +44,7 @@ export default class Api {
 
             _model.edges.forEach(edge => {
                 let new_line = new Line(edge.points[0][0], edge.points[0][1], edge.points[1][0], edge.points[1][1]);
-
+                new_line.selected = edge.selected;
                 edges.push(new_line);
             });
             model.curves = [];
@@ -54,7 +54,7 @@ export default class Api {
         });
 
         this.socket.on('tesselation', (data) => {
-            model.patches = data
+            model.patches = data;
             updateCanvas();
         })
     }

@@ -155,11 +155,11 @@ export default class Canvas extends Component {
     } 
 
     makeDisplayPatches(){
-        this.gl.uniform4fv(this.colorLocation, COLORS.PATCH_COLORS.default);
+        //this.gl.uniform4fv(this.colorLocation, COLORS.PATCH_COLORS.default);
 
-        let pCoords = []
+        //let pCoords = []
 
-        for(let i = 0; i < this.props.model.patches.length; i++){
+        /* for(let i = 0; i < this.props.model.patches.length; i++){
             const pts = this.props.model.patches[i].pts;
             const triangs = this.props.model.patches[i].triangs;
 
@@ -175,16 +175,39 @@ export default class Canvas extends Component {
                 pCoords.push(0.0);
             }
 
-        }
 
-        const positionBuffer = this.gl.createBuffer();
-        this.gl.bindBuffer(this.gl.ARRAY_BUFFER, positionBuffer);
-        this.gl.bufferData(this.gl.ARRAY_BUFFER, new Float32Array(pCoords), this.gl.STATIC_DRAW);
+        } */
 
-        this.gl.enableVertexAttribArray(this.positionAttributeLocation);
-        this.gl.vertexAttribPointer(this.positionAttributeLocation, 3, this.gl.FLOAT, false, 0, 0);
+        Promise.all(this.props.model.patches.map((patch)=>{
+            const pts = patch.pts;
+            const triangs = patch.triangs;
+            let pCoords = []
+            patch.selected ? this.gl.uniform4fv(this.colorLocation, COLORS.PATCH_COLORS.selected) :  
+            this.gl.uniform4fv(this.colorLocation, COLORS.PATCH_COLORS.default)
 
-        this.gl.drawArrays(this.gl.TRIANGLES, 0, pCoords.length/3);
+            for (let j = 0; j < triangs.length; j++) {
+                pCoords.push(pts[triangs[j][0]].x);
+                pCoords.push(pts[triangs[j][0]].y);
+                pCoords.push(0.0);
+                pCoords.push(pts[triangs[j][1]].x);
+                pCoords.push(pts[triangs[j][1]].y);
+                pCoords.push(0.0);
+                pCoords.push(pts[triangs[j][2]].x);
+                pCoords.push(pts[triangs[j][2]].y);
+                pCoords.push(0.0);
+            }
+
+            const positionBuffer = this.gl.createBuffer();
+            this.gl.bindBuffer(this.gl.ARRAY_BUFFER, positionBuffer);
+            this.gl.bufferData(this.gl.ARRAY_BUFFER, new Float32Array(pCoords), this.gl.STATIC_DRAW);
+
+            this.gl.enableVertexAttribArray(this.positionAttributeLocation);
+            this.gl.vertexAttribPointer(this.positionAttributeLocation, 3, this.gl.FLOAT, false, 0, 0);
+
+            this.gl.drawArrays(this.gl.TRIANGLES, 0, pCoords.length/3);
+        }))
+
+        
 
     }
 
