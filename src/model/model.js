@@ -4,6 +4,7 @@ import line from '../curves/line'
 class model {
     constructor(){
         this.curves = [];
+        this.patches = [];
     }
 
     isEmpty(){

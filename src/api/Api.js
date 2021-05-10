@@ -23,12 +23,12 @@ export default class Api {
             alert(`Disconnected from server, reason: ${reason}`);
         });
 
-        this.socket.on('room-created', ()=>{
-            handleRoomCreated();
+        this.socket.on('room-created', (data)=>{
+            handleRoomCreated(data.room_id);
         })
 
-        this.socket.on('room-joined', (token)=>{
-            handleRoomCreated(token);
+        this.socket.on('room-joined', (room_id)=>{
+            handleRoomCreated(room_id);
         })
 
         this.socket.on("insert-curve", (curve) => {
@@ -40,19 +40,23 @@ export default class Api {
         });
 
         this.socket.on("update-model", (_model) => {
-            const curves = []
+            const edges = []
 
-            _model.curves.forEach(curve => {
-                let new_line = new Line(curve.x1, curve.y1, curve.x2, curve.y2);
-                new_line.selected = curve.selected;
-
-                curves.push(new_line);
+            _model.edges.forEach(edge => {
+                let new_line = new Line(edge.points[0][0], edge.points[0][1], edge.points[1][0], edge.points[1][1]);
+                new_line.selected = edge.selected;
+                edges.push(new_line);
             });
             model.curves = [];
-            model.curves = curves;
-
-            updateCanvas();
+            model.curves = edges;
+            
+            this.getTriangs();
         });
+
+        this.socket.on('tesselation', (data) => {
+            model.patches = data;
+            updateCanvas();
+        })
     }
 
     insertCurve(curve){
@@ -83,4 +87,7 @@ export default class Api {
         this.socket.emit('intersect')
     }
 
+    getTriangs(){
+        this.socket.emit('tesselation')
+    }
 }
