@@ -26,7 +26,7 @@ class App extends Component {
 
     componentDidMount(){
         this.Api = new Api();
-        this.Api.connect("https://half-edge-apy.herokuapp.com");
+        this.Api.connect("wss://half-edge-apy.herokuapp.com");
         this.Api.listen(this.model, this.updateConnection, this.handleRoomCreated, this.updateCanvas, /* this.testDisplayPatches */);
     }
 
