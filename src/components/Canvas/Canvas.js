@@ -674,7 +674,7 @@ export default class Canvas extends Component {
                     this.props.model.insertCurve(curve);
                     this.collector.endCurveCollection();
                     this.paint();
-                    //this.props.Api.insertCurve(curve);
+                    this.props.Api.insertCurve(curve);
                 }
                 break;
         
