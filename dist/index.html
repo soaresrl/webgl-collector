@@ -1,6 +1,7 @@
 <!doctype html><html lang="en"><head><meta charset="UTF-8"><meta content="width=device-width,initial-scale=1" name="viewport"><title>Web Collector</title><link rel="icon" type="image/png" href="../src/assets/images/puc.png"/><script defer="defer" src="/bundle.js"></script></head><body style="margin: 0; padding: 0;"><div id="root"></div><script>window.onload = () =>{
                 document.getElementById('root').style.opacity = 1;
-            }</script><script id="vertex-shader-2d" type="notjs">attribute vec3 a_position;
+            }</script><script id="vertex-shader-2d" type="notjs">precision mediump float;
+            attribute vec3 a_position;
             vec4 u_position;
             uniform vec4 u_color;
             uniform mat4 u_projection;

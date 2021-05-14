@@ -6,6 +6,7 @@ import { Checkbox } from 'antd';
 import './Home.css';
 import RoomModal from '../components/RoomModal';
 import CameraOptions from '../components/CameraOptions';
+import Attributes from '../components/Attributes';
 
 export default class Home extends Component {
     constructor(props){
@@ -17,6 +18,7 @@ export default class Home extends Component {
         }
         this.canvasRef = createRef();
         this.roomModalRef = createRef();
+        this.attributesRef = createRef();
         // Bind handle functions
         this.changeMouseAction = this.changeMouseAction.bind(this);
     }
@@ -60,7 +62,7 @@ export default class Home extends Component {
                 <div className='container'>
                     <Header room={this.props.room} connected={this.props.connected}/>
                     <div className='content'> 
-                        <SideMenu roomModalRef = {this.roomModalRef} Api={this.props.Api} canvasRef= {this.canvasRef} model={this.props.model} changeMouseAction={this.changeMouseAction}/>
+                        <SideMenu attributesRef = {this.attributesRef} roomModalRef = {this.roomModalRef} Api={this.props.Api} canvasRef= {this.canvasRef} model={this.props.model} changeMouseAction={this.changeMouseAction}/>
                         <Canvas ref={this.canvasRef} Api={this.props.Api} model={this.props.model} mouseAction={this.state.mouseAction}/>
                         <CameraOptions  canvasRef= {this.canvasRef} model={this.props.model}/>
                         <div className='grid-options'>
@@ -72,6 +74,8 @@ export default class Home extends Component {
                 </div>
 
                 <RoomModal Api={this.props.Api} ref={this.roomModalRef} />
+                <Attributes Api={this.props.Api} ref={this.attributesRef} />
+                <Attributes />
             </>
         );
     }

@@ -19,7 +19,7 @@ export default class GLUtils {
         console.log(gl.getProgramInfoLog(program));
         gl.deleteProgram(program);
 
-        return program
+        return 
     }
 
     
