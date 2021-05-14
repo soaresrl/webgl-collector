@@ -39,3 +39,11 @@ export const COLORS = {
         selected: [1.0,0.0,0.0,1],
     }
 }
+
+export const default_attributes = [
+    {
+        name: 'support',
+        type: 'support',
+        dir: 1 // 1 ou -1
+    }
+]

@@ -88,8 +88,21 @@ export default class Canvas extends Component {
     }
 
     getPosition (e) {
-        const dx = this.right - this.left; //12
-        const dy = this.top - this.bottom; //12
+        if(e.touches){
+            const dx = this.right - this.left;
+            const dy = this.top - this.bottom;
+
+            const mX = (e.touches[0].clientX - e.target.offsetLeft) *dx/this.width;  
+            const mY = (this.height - (e.touches[0].clientY - e.target.offsetTop)) *dy/this.height;
+
+            const x = this.left + mX;
+            const y = this.bottom + mY;
+
+            return {x, y}
+        }
+
+        const dx = this.right - this.left; 
+        const dy = this.top - this.bottom; 
 
         const mX = (e.clientX - e.target.offsetLeft) *dx/this.width;  
         const mY = (this.height - (e.clientY - e.target.offsetTop)) *dy/this.height;
@@ -182,8 +195,16 @@ export default class Canvas extends Component {
             const pts = patch.pts;
             const triangs = patch.triangs;
             let pCoords = []
-            patch.selected ? this.gl.uniform4fv(this.colorLocation, COLORS.PATCH_COLORS.selected) :  
-            this.gl.uniform4fv(this.colorLocation, COLORS.PATCH_COLORS.default)
+
+            if (patch.selected) {
+                this.gl.uniform4fv(this.colorLocation, COLORS.PATCH_COLORS.selected);
+            }
+            else if(patch.isDeleted){
+                this.gl.uniform4fv(this.colorLocation, [0.1, 0.1, 0.1, 1])
+            }
+            else {
+                this.gl.uniform4fv(this.colorLocation, COLORS.PATCH_COLORS.default)
+            }
 
             for (let j = 0; j < triangs.length; j++) {
                 pCoords.push(pts[triangs[j][0]].x);
@@ -241,6 +262,10 @@ export default class Canvas extends Component {
 
     drawSelectionFence(){
         if (!this.buttonPressed) {
+            return;
+        }
+        
+        if(this.props.mouseAction !== 'SELECTION'){
             return;
         }
 
@@ -545,6 +570,159 @@ export default class Canvas extends Component {
         }
     }
 
+    onTouchStart(e){
+        this.buttonPressed = true;
+
+        this.pt0 = {x: e.touches[0].clientX - e.target.offsetLeft, y: e.touches[0].clientY - e.target.offsetTop};
+        this.pt0W = this.getPosition(e);
+        switch (this.props.mouseAction) {
+            case 'SELECTION':
+                
+                break;
+            case 'COLLECTION':
+                if (!this.collector.isActive()) {
+                    this.collector.startCurveCollection();
+                }
+
+                const max_size = ((this.right-this.left) >= (this.top - this.bottom) ? (this.right-this.left) :
+                                (this.top - this.bottom));
+                const tol = max_size*this.pickTolFac;
+
+                if (this.state.is_SnapOn) {
+                    let pos = {x: this.pt0W.x, y: this.pt0W.y};
+                    this.grid.snapTo(pos);
+                    this.pt0W.x = pos.x;
+                    this.pt0W.y = pos.y;
+                }
+
+                if (this.props.model && !this.props.model.isEmpty()) {
+                    let pos = {x: this.pt0W.x, y: this.pt0W.y};
+                    this.props.model.snapToCurve(pos, tol);
+                    this.pt0W.x = pos.x;
+                    this.pt0W.y = pos.y;
+                }
+                this.collector.insertPoint(this.pt0W.x, this.pt0W.y, tol);
+                break;
+            case 'PAN':
+            
+            break;
+            default:
+                break;
+        }
+    }
+
+    onTouchEnd(e){
+        this.buttonPressed = false;
+        switch (this.props.mouseAction) {
+            case 'SELECTION':
+                if (this.mouseButton === 0) {
+                    if (this.props.model != null && !(this.props.model.isEmpty())) {
+                        if ((Math.abs(this.pt0.x - this.pt1.x) <= this.mouseMoveTol) && 
+                        (Math.abs(this.pt0.y - this.pt1.y) <= this.mouseMoveTol)) {
+                            
+                            const max_size = ((this.right-this.left) >= (this.top - this.bottom) ? (this.right-this.left) :
+                            (this.top - this.bottom));
+
+                            const tol = max_size*this.pickTolFac;
+                            this.props.model.selectPick(this.pt1W.x, this.pt1W.y, tol);
+                            this.props.Api.selectPick(this.pt1W.x, this.pt1W.y, tol);
+                        }
+                        else
+                        {
+                            const xmin = (this.pt0W.x < this.pt1W.x) ? this.pt0W.x : this.pt1W.x;
+                            const xmax = (this.pt0W.x > this.pt1W.x) ? this.pt0W.x : this.pt1W.x;
+                            const ymin = (this.pt0W.y < this.pt1W.y) ? this.pt0W.y : this.pt1W.y;
+                            const ymax = (this.pt0W.y > this.pt1W.y) ? this.pt0W.y : this.pt1W.y;
+                            //this.socket.emit('select-fence', xmin, xmax, ymin, ymax);
+                            this.props.model.selectFence(xmin, xmax, ymin, ymax);
+                            this.props.Api.selectFence(xmin, xmax, ymin, ymax);
+                        }
+                    }
+                    this.paint();
+                }
+                break;
+            case 'COLLECTION':
+                const max_size = ((this.right-this.left) >= (this.top - this.bottom) ? (this.right-this.left) :
+                (this.top - this.bottom));
+                const tol = max_size*this.pickTolFac;
+
+                if (this.state.is_SnapOn) {
+                    let pos = {x: this.pt1W.x, y: this.pt1W.y};
+                    this.grid.snapTo(pos);
+                    this.pt1W.x = pos.x;
+                    this.pt1W.y = pos.y;
+                }
+
+                if (this.props.model && !this.props.model.isEmpty()) {
+                    let pos = {x: this.pt1W.x, y: this.pt1W.y};
+                    this.props.model.snapToCurve(pos, tol);
+                    this.pt1W.x = pos.x;
+                    this.pt1W.y = pos.y;
+                }
+                this.collector.insertPoint(this.pt1W.x, this.pt1W.y, tol);
+
+                let endCollection = false;
+                if (!this.collector.isUnlimited()) {
+                    if (this.collector.hasFinished()) {
+                        endCollection = true;
+                    }
+                }
+
+                if (endCollection) {
+                    const curve = this.collector.getCollectedCurve();
+                    console.log(curve);
+                    this.props.model.insertCurve(curve);
+                    this.collector.endCurveCollection();
+                    this.paint();
+                    //this.props.Api.insertCurve(curve);
+                }
+                break;
+        
+            default:
+                break;
+        }
+        
+    }
+    
+    onTouchMove(e){
+        this.pt1 = {x: e.clientX - e.target.offsetLeft, y: e.clientY - e.target.offsetTop};
+        this.pt1W = this.getPosition(e);
+        switch (this.props.mouseAction) {
+            case 'SELECTION':
+                if (this.mouseButton === 0 && this.buttonPressed) {
+                    this.paint();
+                }
+                break;
+            case 'COLLECTION':
+                if (this.collector.isCollecting()) {
+                    if (this.state.is_SnapOn) {
+                        let pos = {x: this.pt1W.x, y: this.pt1W.y};
+                        this.grid.snapTo(pos);
+                        this.pt1W.x = pos.x;
+                        this.pt1W.y = pos.y;
+                    }
+
+                    if (this.props.model && !this.props.model.isEmpty()) {
+                        const max_size = ((this.right-this.left) >= (this.top - this.bottom) ? (this.right-this.left) :
+                                            (this.top - this.bottom));
+                        const tol = max_size*this.pickTolFac;
+
+                        let pos = {x: this.pt1W.x, y: this.pt1W.y};
+                        this.props.model.snapToCurve(pos, tol);
+                        this.pt1W.x = pos.x;
+                        this.pt1W.y = pos.y;
+                    }
+                    this.collector.addTempPoint(this.pt1W.x, this.pt1W.y);
+                    this.paint();
+                }
+            case 'PAN':
+            
+            break;
+            default:
+                break;
+        }
+    }
+
     panWorldWindow(panFacX, panFacY){
         let deslocX, deslocY;
         const panX = (this.right - this.left) * panFacX;
@@ -597,6 +775,9 @@ export default class Canvas extends Component {
                     onMouseDown={this.onMouseDown.bind(this)}
                     onMouseMove={this.onMouseMove.bind(this)}
                     onMouseUp={this.onMouseUp.bind(this)}
+                    onTouchStart={this.onTouchStart.bind(this)}
+                    onTouchMove={this.onTouchMove.bind(this)}
+                    onTouchEnd={this.onTouchEnd.bind(this)}
                 >
                 </canvas>
     }

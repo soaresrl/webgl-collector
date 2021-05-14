@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import {LineOutlined, SelectOutlined, ApiOutlined, PlusSquareOutlined, TableOutlined,
-        DeleteOutlined, ScissorOutlined} from '@ant-design/icons'
+        DeleteOutlined, ScissorOutlined, ToolOutlined} from '@ant-design/icons'
 import './Menu.css'
 
 export default class SideMenu extends Component {
@@ -22,11 +22,11 @@ export default class SideMenu extends Component {
         })
     }
 
-    handleIntersection(){
+    /* handleIntersection(){
         this.props.model.intersectTwoCurves();
         this.props.canvasRef.current.paint();
         this.props.Api.intersect();
-    }
+    } */
 
     handleCreateRoom(){
         this.props.Api.createRoom();
@@ -36,6 +36,13 @@ export default class SideMenu extends Component {
         this.props.roomModalRef.current.setState({
             ...this.props.roomModalRef.current.state,
             isModalVisible: true
+        })
+    }
+
+    handleAttributes(){
+        this.props.attributesRef.current.setState({
+            ...this.props.attributesRef.current.state,
+            isVisible: true
         })
     }
 
@@ -55,12 +62,12 @@ export default class SideMenu extends Component {
                            <span>Select</span>
                        </p>
                    </li>
-                   <li onClick={this.handleIntersection.bind(this)}>
+                   {/* <li onClick={this.handleIntersection.bind(this)}>
                        <p>
                             <ScissorOutlined className='icon'/>
                            <span>Intersect</span>
                        </p>
-                   </li>
+                   </li> */}
                    <li onClick={this.toggleGrid.bind(this)}>
                        <p>
                             <TableOutlined className='icon'/>
@@ -71,6 +78,13 @@ export default class SideMenu extends Component {
                        <p>
                             <DeleteOutlined className='icon'/>
                            <span>Delete</span>
+                       </p>
+                   </li>
+                   <hr className="solid"/>
+                   <li onClick={this.handleAttributes.bind(this)}>
+                       <p>
+                            <ToolOutlined className='icon' />
+                           <span>Attributes</span>
                        </p>
                    </li>
                    <hr className="solid"/>

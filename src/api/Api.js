@@ -80,7 +80,7 @@ export default class Api {
     }
 
     delSelectedCurves(){
-        this.socket.emit('delete-curves');
+        this.socket.emit('delete-selected-entities');
     }
 
     intersect(){
