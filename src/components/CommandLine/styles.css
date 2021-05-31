@@ -1,0 +1,22 @@
+.command-content {
+    position: absolute;
+    left: 70px;
+    bottom: 5px;
+    overflow: hidden;
+}
+
+.command-content input{
+    width: 500px;
+}
+
+@media only screen and (max-width: 1010px) {
+    .command-content {
+        width: 200px;
+    }
+}
+
+@media only screen and (max-width: 700px) {
+    .command-content {
+        visibility: hidden;
+    }
+}
