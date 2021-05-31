@@ -32,3 +32,11 @@
     display: block;
     text-align: center;
 }
+
+@media only screen and (max-width: 700px) {
+    .options-container-true{
+        position:absolute;
+        top: 70px;
+        right: 10px;
+    }
+}

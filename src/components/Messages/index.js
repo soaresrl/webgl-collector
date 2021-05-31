@@ -34,14 +34,6 @@ export default class Messages extends Component {
                 type: 'sent',
                 message: this.state.actualMessage
             }
-            //#insert_curve(0.0,0.0,12.0,12.0)
-            const command = message.message.match(/#(.*?)[(]/)[1];
-            let parameters = message.message.match(/[+-]?([0-9]+([.][0-9]*)?|[+-]?[.][0-9]+)/g);
-            parameters = parameters.map(num => parseFloat(num));
-            console.log(parameters);
-            CommandLine.run(command, parameters, this.props.model, this.props.Api);
-
-            this.props.canvasRef.current.paint();
 
             this.props.Api.sendMessage(message);
 

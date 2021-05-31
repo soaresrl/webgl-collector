@@ -9,6 +9,7 @@ import CameraOptions from '../components/CameraOptions';
 import Attributes from '../components/Attributes';
 import Messages from '../components/Messages';
 import CreateRoom from '../components/CreateRoom';
+import CommandLine from '../components/CommandLine';
 
 export default class Home extends Component {
     constructor(props){
@@ -140,6 +141,12 @@ export default class Home extends Component {
                 <Attributes 
                     Api={this.props.Api} 
                     ref={this.attributesRef} 
+                />
+
+                <CommandLine 
+                    Api={this.props.Api} 
+                    model={this.props.model}
+                    canvasRef={this.canvasRef}
                 />
             </>
         );

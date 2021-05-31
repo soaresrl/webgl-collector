@@ -51,3 +51,9 @@
     height: 80px;
     border-radius: 10px;
 }
+
+@media only screen and (max-width: 700px) {
+    .messages-container {
+        visibility: hidden;
+    }
+}
