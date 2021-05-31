@@ -3,12 +3,7 @@
     width: 60px;
     height: 100%;
     background: #C8C2C2;
-    transition: 0.5s;
     overflow: hidden;
-}
-
-.navigation:hover {
-    width: 250px;
 }
 
 .navigation ul {

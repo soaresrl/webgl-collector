@@ -7,20 +7,36 @@
     height: 100vh;
 }
 
-.content {
+.content-true {
+    width: auto;
+    height: auto;
+    display: grid;
+    grid-template-columns: 60px auto 300px;
+}
+
+.content-false {
     width: auto;
     height: auto;
     display: grid;
     grid-template-columns: 60px auto;
 }
 
-.grid-options {
+.grid-options-true {
     position:absolute;
     display: grid;
     grid-template-columns: auto auto auto;
     margin: 0;
     bottom:0;
-    right: 0;
+    right: 310px;
+}
+
+.grid-options-false {
+    position:absolute;
+    display: grid;
+    grid-template-columns: auto auto auto;
+    margin: 0;
+    bottom:0;
+    right: 10px;
 }
 
 .grid-snap span{

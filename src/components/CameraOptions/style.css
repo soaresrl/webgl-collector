@@ -1,7 +1,13 @@
-.options-container{
+.options-container-true{
     position:absolute;
     top: 70px;
-    right: 5px;
+    right: 310px;
+}
+
+.options-container-false{
+    position:absolute;
+    top: 70px;
+    right: 10px;
 }
 
 .option{    

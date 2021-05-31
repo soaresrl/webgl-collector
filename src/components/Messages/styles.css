@@ -1,0 +1,53 @@
+.messages-container {
+    background: #C8C2C2;
+    height: calc(100vh - 60px);
+    display: grid;
+    grid-template-rows: 25px auto 90px;
+}
+
+.messages-area {
+    overflow-y: auto;
+}
+
+.message-sent{
+    float: right;
+    width: 200px;
+    border-radius: 10px;
+    margin: 5px;
+    background: #8297aa;
+    text-align: right;
+}
+
+.message-sent p{
+    margin-right: 5px;
+    word-wrap: break-word;
+}
+
+.message-sent strong{
+    margin-right: 5px;
+}
+
+.message-received {
+    float: left;
+    width: 200px;
+    border-radius: 10px;
+    margin: 5px;
+    background: beige;
+    text-align: left;
+}
+
+.message-received p{
+    margin-left: 5px;
+    word-wrap: break-word;
+}
+
+.message-received strong{
+    margin-left: 5px;
+}
+
+.messages-container .input-message {
+    margin: 5px;
+    width: 290px;
+    height: 80px;
+    border-radius: 10px;
+}
