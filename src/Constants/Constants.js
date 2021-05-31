@@ -45,5 +45,10 @@ export const default_attributes = [
         name: 'support',
         type: 'support',
         dir: 1 // 1 ou -1
+    },
+    {
+        name: 'qualquer',
+        type: 'Force',
+        dir: 1 // 1 ou -1
     }
 ]

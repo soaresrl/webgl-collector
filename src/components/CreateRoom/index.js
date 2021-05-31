@@ -2,16 +2,15 @@ import React, { Component } from "react"
 import Draggable from 'react-draggable'
 import {CloseSquareOutlined} from '@ant-design/icons'
 import {Button} from 'antd'
-import './RoomModal.css'
+import './styles.css'
 
-export default class RoomModal extends Component{
+export default class CreateRoom extends Component{
 
     constructor(props){
         super(props);
 
         this.state = {
             isModalVisible: false,
-            roomToken: '',
             username: ''
         }
     }
@@ -23,19 +22,12 @@ export default class RoomModal extends Component{
         })
     }
 
-    handleJoinRoom(){
+    handleCreateRoom(){
         this.props.setUsername(this.state.username);
-        this.props.Api.joinRoom(this.state.roomToken);
+        this.props.Api.createRoom();
     }
     
     handleInputChange(e){
-        this.setState({
-            ...this.state,
-            roomToken: e.target.value
-        })
-    }
-
-    handleUsernameChange(e){
         this.setState({
             ...this.state,
             username: e.target.value
@@ -45,19 +37,17 @@ export default class RoomModal extends Component{
     render(){
         return(
             this.state.isModalVisible && <Draggable>
-                <div className='join-room'>
+                <div className='create-room'>
                     <div className='title'>
-                        <h4>Join Room</h4>
+                        <h4>Create Room</h4>
                         <CloseSquareOutlined onClick={this.handleCancel.bind(this)} className='icon' />
                     </div>
                     <hr className="solid"/>
                     <div className='content'>
                         <p> Username </p>
-                        <input onChange={this.handleUsernameChange.bind(this)} placeholder="Type an username..."/>
-                        <p> Token </p>
-                        <input onChange={this.handleInputChange.bind(this)} placeholder="Type the room's token..."/>
+                        <input value={this.state.username} onChange={this.handleInputChange.bind(this)} placeholder="Type an username..."/>
                         <Button onClick={this.handleCancel.bind(this)} danger >Cancel</Button>
-                        <Button onClick={this.handleJoinRoom.bind(this)} type='primary'>Join</Button>
+                        <Button onClick={this.handleCreateRoom.bind(this)} type='primary'>Create</Button>
                     </div>
                 </div>
             </Draggable>

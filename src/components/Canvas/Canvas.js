@@ -226,9 +226,7 @@ export default class Canvas extends Component {
             this.gl.vertexAttribPointer(this.positionAttributeLocation, 3, this.gl.FLOAT, false, 0, 0);
 
             this.gl.drawArrays(this.gl.TRIANGLES, 0, pCoords.length/3);
-        }))
-
-        
+        }));
 
     }
 

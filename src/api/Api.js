@@ -7,13 +7,13 @@ export default class Api {
     }
 
     connect(url){
-        this.socket = io(url);
+        this.socket = io(url, {transports: ['websocket']});
     }
 
-    listen(model, updateConnection, handleRoomCreated, updateCanvas){
+    listen(model, updateConnection, handleRoomCreated, updateCanvas, updateMessages){
         this.socket.on('connect', ()=>{
             updateConnection();
-        })
+        });
 
         this.socket.on("disconnect", (reason) => {
             alert(`Disconnected from server, reason: ${reason}`);
@@ -25,11 +25,11 @@ export default class Api {
 
         this.socket.on('room-created', (data)=>{
             handleRoomCreated(data.room_id);
-        })
+        });
 
         this.socket.on('room-joined', (room_id)=>{
             handleRoomCreated(room_id);
-        })
+        });
 
         this.socket.on("insert-curve", (curve) => {
             let line = new Line(curve.x1, curve.y1, curve.x2, curve.y2);
@@ -40,7 +40,7 @@ export default class Api {
         });
 
         this.socket.on("update-model", (_model) => {
-            const edges = []
+            const edges = [];
 
             _model.edges.forEach(edge => {
                 let new_line = new Line(edge.points[0][0], edge.points[0][1], edge.points[1][0], edge.points[1][1]);
@@ -56,7 +56,11 @@ export default class Api {
         this.socket.on('tesselation', (data) => {
             model.patches = data;
             updateCanvas();
-        })
+        });
+
+        this.socket.on('message', (message)=>{
+            updateMessages(message);
+        });
     }
 
     insertCurve(curve){
@@ -79,15 +83,19 @@ export default class Api {
         this.socket.emit('select-pick', x, y, tol);
     }
 
-    delSelectedCurves(){
+    delSelectedEntities(){
         this.socket.emit('delete-selected-entities');
     }
 
     intersect(){
-        this.socket.emit('intersect')
+        this.socket.emit('intersect');
     }
 
     getTriangs(){
-        this.socket.emit('tesselation')
+        this.socket.emit('tesselation');
+    }
+
+    sendMessage(message){
+        this.socket.emit('message', message);
     }
 }

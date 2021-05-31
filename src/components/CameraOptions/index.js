@@ -42,26 +42,26 @@ export default class CameraOptions extends Component{
 
     render(){
         return(
-            <div className='options-container'>
-                <div onClick={this.handleZoomIn.bind(this)} className='option'>
+            <div className={`options-container-${this.props.room.hasRoom}`}>
+                <div title="Zoom in" onClick={this.handleZoomIn.bind(this)} className='option'>
                     <PlusOutlined className='icon'/>
                 </div>
-                <div onClick={this.handleZoomOut.bind(this)} className='option'>
+                <div title="Zoom out" onClick={this.handleZoomOut.bind(this)} className='option'>
                     <MinusOutlined className='icon'/>
                 </div>
-                <div onClick={this.handlePanDown.bind(this)} className='option'>
+                <div title="Pan down" onClick={this.handlePanDown.bind(this)} className='option'>
                     <DownOutlined className='icon'/>
                 </div>
-                <div onClick={this.handlePanUp.bind(this)} className='option'>
+                <div title="Pan up" onClick={this.handlePanUp.bind(this)} className='option'>
                     <UpOutlined className='icon'/>
                 </div>
-                <div onClick={this.handlePanLeft.bind(this)} className='option'>
+                <div title="Pan left" onClick={this.handlePanLeft.bind(this)} className='option'>
                     <LeftOutlined className='icon'/>
                 </div>
-                <div onClick={this.handlePanRight.bind(this)} className='option'>
+                <div title="Pan right" onClick={this.handlePanRight.bind(this)} className='option'>
                     <RightOutlined className='icon'/>
                 </div>
-                <div onClick={this.handleFitToView.bind(this)} className='option'>
+                <div title="Fit to view" onClick={this.handleFitToView.bind(this)} className='option'>
                     <FullscreenOutlined className='icon'/>
                 </div>
             </div>
