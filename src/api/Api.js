@@ -3,11 +3,23 @@ import Line from '../curves/line';
 
 export default class Api {
     constructor(){
-
+        this.subFunctions = [];
     }
 
     connect(url){
-        this.socket = io(url, {transports: ['websocket']});
+        this.socket = io(url/* , {transports: ['websocket']} */);
+    }
+
+    subscribe(func){
+        this.subFunctions = [
+            ...this.subFunctions,
+            func
+        ]
+    }
+
+    unsubscribe(func){
+        const index = this.subFunctions.findIndex(f => f.name == func.name);
+        this.subFunctions.splice(index);
     }
 
     listen(model, updateConnection, handleRoomCreated, updateCanvas, updateMessages){
@@ -31,16 +43,11 @@ export default class Api {
             handleRoomCreated(room_id);
         });
 
-        this.socket.on("insert-curve", (curve) => {
-            let line = new Line(curve.x1, curve.y1, curve.x2, curve.y2);
-            line.selected = curve.selected;
-            model.curves.push(line);
-
-            updateCanvas();
-        });
-
         this.socket.on("update-model", (_model) => {
             const edges = [];
+            const vertices = [
+                ..._model.vertices
+            ];
 
             _model.edges.forEach(edge => {
                 let new_line = new Line(edge.points[0][0], edge.points[0][1], edge.points[1][0], edge.points[1][1]);
@@ -49,18 +56,28 @@ export default class Api {
             });
             model.curves = [];
             model.curves = edges;
+            model.vertices = vertices;
             
             this.getTriangs();
+            this.getAttributeSymbols();
         });
 
         this.socket.on('tesselation', (data) => {
             model.patches = data;
-            updateCanvas();
         });
 
         this.socket.on('message', (message)=>{
             updateMessages(message);
         });
+
+        this.socket.on('receive-prototypes', (prototypes)=>{
+            this.subFunctions[0](prototypes);
+        })
+
+        this.socket.on('receive-symbols', (symbols)=>{
+            model.attributes_symbols = symbols;
+            updateCanvas();
+        })
     }
 
     insertCurve(curve){
@@ -97,5 +114,20 @@ export default class Api {
 
     sendMessage(message){
         this.socket.emit('message', message);
+    }
+
+    getPrototypes(handle_prototypes){
+        this.socket.emit('get-prototypes');
+        this.subscribe(handle_prototypes);
+
+        console.log(this.subFunctions);
+    }
+
+    applyAttribute(attribute){
+        this.socket.emit('apply-attribute', attribute);
+    }
+
+    getAttributeSymbols(){
+        this.socket.emit('get-attribute-symbols');
     }
 }

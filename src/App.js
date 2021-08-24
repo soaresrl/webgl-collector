@@ -3,6 +3,7 @@ import Api from './api/Api';
 import model from './model/model';
 import Home from './pages/Home';
 import './assets/images/puc.png';
+import './styles/global.css'
 
 class App extends Component {
 
@@ -32,7 +33,7 @@ class App extends Component {
 
     componentDidMount(){
         this.Api = new Api();
-        this.Api.connect("https://half-edge-apy.herokuapp.com");
+        this.Api.connect("http://localhost:5000");
         this.Api.listen(this.model, 
             this.updateConnection, 
             this.handleRoomCreated, 

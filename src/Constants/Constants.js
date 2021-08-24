@@ -37,18 +37,9 @@ export const COLORS = {
     CURVE_COLORS: {
         default: [0.20,0.33,0.45,1],
         selected: [1.0,0.0,0.0,1],
+    },
+    VERTEX_COLORS: {
+        default: [0.0,0.0,1.0,1],
+        selected: [1.0,0.0,0.0,1],
     }
 }
-
-export const default_attributes = [
-    {
-        name: 'support',
-        type: 'support',
-        dir: 1 // 1 ou -1
-    },
-    {
-        name: 'qualquer',
-        type: 'Force',
-        dir: 1 // 1 ou -1
-    }
-]

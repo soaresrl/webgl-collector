@@ -151,7 +151,7 @@ export default class Canvas extends Component {
     
             this.gl.drawArrays(this.gl.LINES, 0, pCoords.length/3);
 
-             // Draw line points
+            /*  // Draw line points
             const ptsPositionBuffer = this.gl.createBuffer();
             this.gl.bindBuffer(this.gl.ARRAY_BUFFER, ptsPositionBuffer);
             this.gl.bufferData(this.gl.ARRAY_BUFFER, new Float32Array(pCoords), this.gl.STATIC_DRAW);
@@ -162,38 +162,44 @@ export default class Canvas extends Component {
             this.gl.uniform4fv(this.colorLocation, [0.0,0.0,1.0,1]);
             this.gl.uniform1f(this.pointSizeLocation, 5.0);
 
-            this.gl.drawArrays(this.gl.POINTS, 0, pCoords.length/3);
+            this.gl.drawArrays(this.gl.POINTS, 0, pCoords.length/3); */
 
         });
     } 
 
-    makeDisplayPatches(){
-        //this.gl.uniform4fv(this.colorLocation, COLORS.PATCH_COLORS.default);
+    makeDisplayVertices(){
+        const {vertices} = this.props.model
 
-        //let pCoords = []
-
-        /* for(let i = 0; i < this.props.model.patches.length; i++){
-            const pts = this.props.model.patches[i].pts;
-            const triangs = this.props.model.patches[i].triangs;
-
-            for (let j = 0; j < triangs.length; j++) {
-                pCoords.push(pts[triangs[j][0]].x);
-                pCoords.push(pts[triangs[j][0]].y);
-                pCoords.push(0.0);
-                pCoords.push(pts[triangs[j][1]].x);
-                pCoords.push(pts[triangs[j][1]].y);
-                pCoords.push(0.0);
-                pCoords.push(pts[triangs[j][2]].x);
-                pCoords.push(pts[triangs[j][2]].y);
-                pCoords.push(0.0);
+        vertices.forEach((vertex)=>{
+            const {points} = vertex;
+            
+             // If curve is selected draw it in red, else draw it in blue
+            if (vertex.selected) {
+                this.gl.uniform4fv(this.colorLocation, COLORS.VERTEX_COLORS.selected);
+            }
+            else
+            {
+                this.gl.uniform4fv(this.colorLocation, COLORS.VERTEX_COLORS.default);
             }
 
+            const positionBuffer = this.gl.createBuffer();
+            this.gl.bindBuffer(this.gl.ARRAY_BUFFER, positionBuffer);
+            this.gl.bufferData(this.gl.ARRAY_BUFFER, new Float32Array(points), this.gl.STATIC_DRAW);
 
-        } */
+            this.gl.enableVertexAttribArray(this.positionAttributeLocation);
+            this.gl.vertexAttribPointer(this.positionAttributeLocation, 2, this.gl.FLOAT, false, 0, 0);
+            this.gl.uniform1f(this.pointSizeLocation, 5.0);
+
+            this.gl.drawArrays(this.gl.POINTS, 0, points.length/2);
+        })
+      
+    }
+
+    makeDisplayPatches(){
 
         Promise.all(this.props.model.patches.map((patch)=>{
             const pts = patch.pts;
-            const triangs = patch.triangs;
+            const triangles = patch.triangles;
             let pCoords = []
 
             if (patch.selected) {
@@ -206,15 +212,15 @@ export default class Canvas extends Component {
                 this.gl.uniform4fv(this.colorLocation, COLORS.PATCH_COLORS.default)
             }
 
-            for (let j = 0; j < triangs.length; j++) {
-                pCoords.push(pts[triangs[j][0]].x);
-                pCoords.push(pts[triangs[j][0]].y);
+            for (let j = 0; j < triangles.length; j++) {
+                pCoords.push(pts[triangles[j][0]].x);
+                pCoords.push(pts[triangles[j][0]].y);
                 pCoords.push(0.0);
-                pCoords.push(pts[triangs[j][1]].x);
-                pCoords.push(pts[triangs[j][1]].y);
+                pCoords.push(pts[triangles[j][1]].x);
+                pCoords.push(pts[triangles[j][1]].y);
                 pCoords.push(0.0);
-                pCoords.push(pts[triangs[j][2]].x);
-                pCoords.push(pts[triangs[j][2]].y);
+                pCoords.push(pts[triangles[j][2]].x);
+                pCoords.push(pts[triangles[j][2]].y);
                 pCoords.push(0.0);
             }
 
@@ -228,6 +234,63 @@ export default class Canvas extends Component {
             this.gl.drawArrays(this.gl.TRIANGLES, 0, pCoords.length/3);
         }));
 
+    }
+
+    makeDisplayAttributes(){
+        const attributes = this.props.model.attributes_symbols;
+
+        if (attributes && attributes.length > 0) {
+            attributes.forEach(attribute => {
+                const { lines, triangles } = attribute
+                let lineCoords = []
+                lines.forEach(line => {
+                    lineCoords.push(
+                        line[0][0],
+                        line[0][1],
+                        0.0,
+                        line[1][0],
+                        line[1][1],
+                        0.0
+                )})
+                this.gl.uniform4fv(this.colorLocation, [...attribute.color, 1.0]);
+    
+                const positionBuffer = this.gl.createBuffer();
+                this.gl.bindBuffer(this.gl.ARRAY_BUFFER, positionBuffer);
+                this.gl.bufferData(this.gl.ARRAY_BUFFER, new Float32Array(lineCoords), this.gl.STATIC_DRAW);
+        
+                this.gl.enableVertexAttribArray(this.positionAttributeLocation);
+                this.gl.vertexAttribPointer(this.positionAttributeLocation, 3, this.gl.FLOAT, false, 0, 0);
+        
+                this.gl.drawArrays(this.gl.LINES, 0, lineCoords.length/3);
+                
+                let trianglesCoords = []
+
+                triangles.forEach(triangle => {
+                    trianglesCoords.push(
+                        triangle[0][0],
+                        triangle[0][1],
+                        0.0,
+                        triangle[1][0],
+                        triangle[1][1],
+                        0.0,
+                        triangle[2][0],
+                        triangle[2][1],
+                        0.0
+                    )
+                })
+
+                this.gl.uniform4fv(this.colorLocation, [...attribute.color, 1.0]);
+    
+                const trianglesPositionBuffer = this.gl.createBuffer();
+                this.gl.bindBuffer(this.gl.ARRAY_BUFFER, trianglesPositionBuffer);
+                this.gl.bufferData(this.gl.ARRAY_BUFFER, new Float32Array(trianglesCoords), this.gl.STATIC_DRAW);
+        
+                this.gl.enableVertexAttribArray(this.positionAttributeLocation);
+                this.gl.vertexAttribPointer(this.positionAttributeLocation, 3, this.gl.FLOAT, false, 0, 0);
+        
+                this.gl.drawArrays(this.gl.TRIANGLES, 0, trianglesCoords.length);
+            })
+        }
     }
 
     drawCollectedCurve(){
@@ -437,7 +500,7 @@ export default class Canvas extends Component {
                             (this.top - this.bottom));
 
                             const tol = max_size*this.pickTolFac;
-                            this.props.model.selectPick(this.pt1W.x, this.pt1W.y, tol);
+                            //this.props.model.selectPick(this.pt1W.x, this.pt1W.y, tol);
                             this.props.Api.selectPick(this.pt1W.x, this.pt1W.y, tol);
                         }
                         else
@@ -668,7 +731,6 @@ export default class Canvas extends Component {
 
                 if (endCollection) {
                     const curve = this.collector.getCollectedCurve();
-                    console.log(curve);
                     this.props.model.insertCurve(curve);
                     this.collector.endCurveCollection();
                     this.paint();
@@ -761,6 +823,8 @@ export default class Canvas extends Component {
 
         this.makeDisplayPatches();
         this.makeDisplayCurves();
+        this.makeDisplayVertices();
+        this.makeDisplayAttributes();
         this.state.viewGrid && this.makeDisplayGrid();
         this.drawCollectedCurve();
         this.drawSelectionFence();

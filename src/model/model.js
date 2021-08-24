@@ -5,6 +5,9 @@ class model {
     constructor(){
         this.curves = [];
         this.patches = [];
+        this.vertices = [];
+        this.prototypes = [];
+        this.attributes_symbols = [];
     }
 
     isEmpty(){

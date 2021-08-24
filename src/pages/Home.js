@@ -18,6 +18,7 @@ export default class Home extends Component {
 
         this.state = {
             mouseAction: null,
+            isAttributeVisible: false
         }
         this.canvasRef = createRef();
         this.roomModalRef = createRef();
@@ -27,6 +28,8 @@ export default class Home extends Component {
         // Bind handle functions
         this.changeMouseAction = this.changeMouseAction.bind(this);
         this.updateMessages = this.updateMessages.bind(this);
+        this.setAttibuteVisible = this.setAttibuteVisible.bind(this);
+        this.setAttibuteNotVisible = this.setAttibuteNotVisible.bind(this);
     }
 
     componentDidUpdate(prevProps, prevState){
@@ -76,6 +79,20 @@ export default class Home extends Component {
         this.canvasRef.current.paint();
     }
 
+    setAttibuteVisible(){
+        this.setState({
+            ...this.state,
+            isAttributeVisible: true
+        })
+    }
+
+    setAttibuteNotVisible(){
+        this.setState({
+            ...this.state,
+            isAttributeVisible: false
+        })
+    }
+
     render(){
         return(
             <>
@@ -90,6 +107,7 @@ export default class Home extends Component {
                             Api = {this.props.Api} 
                             canvasRef = {this.canvasRef}
                             model = {this.props.model} 
+                            setAttibuteVisible = {this.setAttibuteVisible}
                             changeMouseAction={this.changeMouseAction}
                         />
                         <Canvas 
@@ -138,10 +156,12 @@ export default class Home extends Component {
                     setUsername={this.props.setUsername} 
                 />
 
-                <Attributes 
+                {this.state.isAttributeVisible && <Attributes 
                     Api={this.props.Api} 
+                    model={this.props.model}
+                    setAttibuteNotVisible = {this.setAttibuteNotVisible}
                     ref={this.attributesRef} 
-                />
+                />}
 
                 <CommandLine 
                     Api={this.props.Api} 

@@ -83,10 +83,12 @@ export default class SideMenu extends Component {
     }
 
     handleAttributes(){
-        this.props.attributesRef.current.setState({
+        
+        this.props.setAttibuteVisible();
+        /* this.props.attributesRef.current.setState({
             ...this.props.attributesRef.current.state,
             isVisible: true
-        });
+        }); */
     }
 
     render() {
