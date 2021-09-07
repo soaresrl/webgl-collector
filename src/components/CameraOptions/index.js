@@ -7,22 +7,22 @@ import './style.css'
 export default class CameraOptions extends Component{
     
     handlePanLeft(){
-        this.props.canvasRef.current.panWorldWindow(0.95, 1.0);
-        this.props.canvasRef.current.paint();
-    }
-
-    handlePanRight(){
         this.props.canvasRef.current.panWorldWindow(1.05, 1.0);
         this.props.canvasRef.current.paint();
     }
 
+    handlePanRight(){
+        this.props.canvasRef.current.panWorldWindow(0.95, 1.0);
+        this.props.canvasRef.current.paint();
+    }
+
     handlePanDown(){
-        this.props.canvasRef.current.panWorldWindow(1.0, 0.95);
+        this.props.canvasRef.current.panWorldWindow(1.0, 1.05);
         this.props.canvasRef.current.paint();
     }
 
     handlePanUp(){
-        this.props.canvasRef.current.panWorldWindow(1.0, 1.05);
+        this.props.canvasRef.current.panWorldWindow(1.0, 0.95);
         this.props.canvasRef.current.paint();
     }
 

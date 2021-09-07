@@ -1,6 +1,6 @@
-import React, {Component} from 'react'
-import {Radio} from 'antd'
-import {SketchPicker} from 'react-color'
+import React, { Component } from 'react'
+import { Radio } from 'antd'
+import { SketchPicker } from 'react-color'
 
 export default class PropertyField extends Component {
     constructor(props){

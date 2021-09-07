@@ -81,13 +81,11 @@ export function computeSegmentSegmentIntersection(params) {
     if (orientation(params.p1, params.p2, params.p3) === SIGN.POSITIVE && 
         orientation(params.p1, params.p2, params.p4) === SIGN.POSITIVE) 
     {
-        console.log('a')
         return IntersectionType.DO_NOT_INTERSECT;
     }
     else if (orientation(params.p1, params.p2, params.p3) === SIGN.NEGATIVE && 
         orientation(params.p1, params.p2, params.p4) === SIGN.NEGATIVE) 
     {
-        console.log('b')
         return IntersectionType.DO_NOT_INTERSECT;
     }
 
@@ -96,13 +94,11 @@ export function computeSegmentSegmentIntersection(params) {
     if (orientation(params.p3, params.p4, params.p1) === SIGN.POSITIVE && 
         orientation(params.p3, params.p4, params.p2) === SIGN.POSITIVE) 
     {
-        console.log('c')
         return IntersectionType.DO_NOT_INTERSECT;
     }
     else if (orientation(params.p3, params.p4, params.p1) === SIGN.NEGATIVE && 
         orientation(params.p3, params.p4, params.p2) === SIGN.NEGATIVE) 
     {
-        console.log('d')
         return IntersectionType.DO_NOT_INTERSECT;
     }
 

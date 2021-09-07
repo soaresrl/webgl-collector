@@ -12,7 +12,6 @@ export default class Grid {
     }
 
     setSnapData(dx, dy, is_snapOn ){
-        console.log(dx, dy, is_snapOn)
         this.gridX = dx;
         this.gridY = dy;
         this.is_SnapOn = is_snapOn;

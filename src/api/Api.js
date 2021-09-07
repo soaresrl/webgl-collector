@@ -50,10 +50,11 @@ export default class Api {
             ];
 
             _model.edges.forEach(edge => {
-                let new_line = new Line(edge.points[0][0], edge.points[0][1], edge.points[1][0], edge.points[1][1]);
+                let new_line = new Line(edge.points[0][0], edge.points[0][1], edge.points[1][0], edge.points[1][1], edge.attributes);
                 new_line.selected = edge.selected;
                 edges.push(new_line);
             });
+            
             model.curves = [];
             model.curves = edges;
             model.vertices = vertices;
@@ -119,8 +120,6 @@ export default class Api {
     getPrototypes(handle_prototypes){
         this.socket.emit('get-prototypes');
         this.subscribe(handle_prototypes);
-
-        console.log(this.subFunctions);
     }
 
     applyAttribute(attribute){

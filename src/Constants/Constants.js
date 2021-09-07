@@ -43,3 +43,5 @@ export const COLORS = {
         selected: [1.0,0.0,0.0,1],
     }
 }
+
+export const PI = 3.14159265359;

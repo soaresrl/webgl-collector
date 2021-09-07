@@ -8,6 +8,7 @@ class line extends curve{
             this.y1 = arguments[1];
             this.x2 = arguments[2];
             this.y2 = arguments[3];
+            this.attributes = arguments[4];
             this.nPts = 2;
         }
         else
@@ -37,14 +38,14 @@ class line extends curve{
 
     getPoint(t){
         let vx = this.x2 - this.x1;
-        let vy = this.y2 - this.y2;
+        let vy = this.y2 - this.y1;
         let xOn, yOn;
 
         if (t < 0) {
             xOn = this.x1;
             yOn = this.y1;
         }
-        else if (t > 0)
+        else if (t > 1)
         {
             xOn = this.x2;
             yOn = this.y2;

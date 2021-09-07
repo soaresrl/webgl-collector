@@ -1,30 +1,10 @@
 import React, { Component } from "react"
 import Draggable from 'react-draggable'
-import {CloseSquareOutlined} from '@ant-design/icons'
-import {Button} from 'antd'
-import './styles.css'
-import PropertyField from "./PropertyFields"
+import { CloseSquareOutlined } from '@ant-design/icons'
+import { Button } from 'antd'
 
-const PrototypeComponent = (props) => {
-    if(!props.currentAttribute){
-        return null
-    }
-    
-    return (<>
-                {Object.keys(props.currentAttribute.properties).map((property, index)=>(
-                    <>
-                        <p>{`${property}`}</p>
-                        <PropertyField 
-                            key={`${property}-${index}-field`}
-                            attribute={props.currentAttribute} 
-                            handleChangeProperty={props.handleChangeProperty} 
-                            property={property}
-                            type={props.currentAttribute.properties_type[index]}
-                        />
-                    </>
-                ))}
-            </>)
-}
+import { Prototype } from './Prototype'
+import './styles.css'
 
 export default class Attributes extends Component{
 
@@ -32,17 +12,13 @@ export default class Attributes extends Component{
         super(props);
 
         this.state = {
-            isVisible: false,
             attributes: [],
             prototypes: [],
             selectedPrototype: null,
-            currentAttribute: null,
-            prototypeComponent: null
+            currentAttribute: null
         }
 
         this.handleReceivePrototypes = this.handleReceivePrototypes.bind(this);
-        this.renderSelectedPrototype =  this.renderSelectedPrototype.bind(this);
-        //this.renderPropertyField = this.renderPropertyField.bind(this);
         this.handleChangeProperty = this.handleChangeProperty.bind(this);
         this.handleChangeAttributeName = this.handleChangeAttributeName.bind(this);
     }
@@ -79,32 +55,7 @@ export default class Attributes extends Component{
                     'Color': {r: prototype.properties.Color[0], g: prototype.properties.Color[1], b: prototype.properties.Color[2]}
                 }
             }
-        }, this.renderSelectedPrototype)
-    }
-
-    renderSelectedPrototype(){
-
-        const prototypeComponent = (
-            <>
-                {Object.keys(this.state.currentAttribute.properties).map((property, index)=>(
-                    <>
-                    <p key={`${property}-${index}`}>{`${property}`}</p>
-                    <PropertyField 
-                        attribute={this.state.currentAttribute} 
-                        handleChangeProperty={this.handleChangeProperty} 
-                        property={property}
-                        type={this.state.currentAttribute.properties_type[index]}
-                    />
-                    {/* this.renderPropertyField( property, prototype.properties_type[index]) */}
-                    </>
-                ))}
-            </>
-        )
-
-        this.setState({
-            ...this.state,
-            prototypeComponent
-        });
+        })
     }
 
     handleChangeProperty(e, property, type){
@@ -203,18 +154,19 @@ export default class Attributes extends Component{
                                 <option value={attribute.type} key={`${index}-type`}> {attribute.type} </option>
                             ))}
                         </select>
-                        {this.state.currentAttribute && <div className='prototypes'>
-                            <p> Name: </p>
-                            <input 
-                                placeholder="type attribute's name..." 
-                                onChange={this.handleChangeAttributeName}
-                            />
-                            <PrototypeComponent
-                                currentAttribute={this.state.currentAttribute}
-                                handleChangeProperty={this.handleChangeProperty}
-                            />
-                            {/* this.state.prototypeComponent */}
-                        </div>}
+                        {this.state.currentAttribute && 
+                            <div className='prototypes'>
+                                <p> Name: </p>
+                                <input 
+                                    placeholder="type attribute's name..." 
+                                    onChange={this.handleChangeAttributeName}
+                                />
+                                <Prototype
+                                    currentAttribute={this.state.currentAttribute}
+                                    handleChangeProperty={this.handleChangeProperty}
+                                />
+                            </div>
+                        }
                     </div>
                     <div className="action-buttons">
                         <Button onClick={this.handleCancel.bind(this)} danger >Cancel</Button>
