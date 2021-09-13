@@ -33,7 +33,7 @@ class App extends Component {
 
     componentDidMount(){
         this.Api = new Api();
-        this.Api.connect("http://localhost:5000");
+        this.Api.connect("https://half-edge-apy.herokuapp.com/");
         this.Api.listen(this.model, 
             this.updateConnection, 
             this.handleRoomCreated, 

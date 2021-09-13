@@ -7,7 +7,7 @@ export default class Api {
     }
 
     connect(url){
-        this.socket = io(url/* , {transports: ['websocket']} */);
+        this.socket = io(url, {transports: ['websocket']});
     }
 
     subscribe(func){
