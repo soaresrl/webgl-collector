@@ -1,8 +1,9 @@
-import React, {useEffect} from "react"
+import React from "react"
 import PropertyField from "../PropertyFields"
 
 export function Prototype(props){
-    const currentAttribute = props.currentAttribute;
+    const { currentAttribute } = props;
+    
     if(!currentAttribute){
         return null
     }

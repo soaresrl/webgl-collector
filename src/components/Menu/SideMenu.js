@@ -1,10 +1,20 @@
 import React, { Component } from 'react';
-import {LineOutlined, SelectOutlined, ApiOutlined, PlusSquareOutlined, TableOutlined,
+import { LineOutlined, SelectOutlined, ApiOutlined, PlusSquareOutlined, TableOutlined,
         DeleteOutlined/* , ScissorOutlined */, ToolOutlined} from '@ant-design/icons';
-import {notification} from 'antd';
+import { GiCobweb } from 'react-icons/gi'
+import { notification } from 'antd';
 import './Menu.css';
 
 export default class SideMenu extends Component {
+
+    constructor(props){
+        super(props);
+
+        this.state = {
+            line: false,
+            select: false
+        }
+    }
 
     changeMouse(mouseAction){
         if(!this.props.connected){
@@ -15,6 +25,20 @@ export default class SideMenu extends Component {
             });
 
             return;
+        }
+        if(mouseAction == 'COLLECTION'){
+            this.setState({
+                ...this.state,
+                line: true,
+                select: false
+            })
+        }
+        else if(mouseAction == 'SELECTION'){
+            this.setState({
+                ...this.state,
+                line: false,
+                select: true
+            })
         }
         this.props.changeMouseAction(mouseAction);
     }
@@ -91,62 +115,66 @@ export default class SideMenu extends Component {
         }); */
     }
 
+    handleGenerateMesh(){
+        //this.props.Api.generateMesh();
+        this.props.meshModalRef.current.setState({
+            ...this.props.meshModalRef.current.state,
+            isModalVisible: true
+        });
+    }
+
     render() {
         return (
            <div className='navigation'>
-               <ul>
-                   <li title="Insert line" onClick={()=>{this.changeMouse('COLLECTION')}}>
-                       <p>
-                           <LineOutlined className='icon'/>
-                           {/* <span>Line</span> */}
-                       </p>
-                   </li>
-                   <li title="Select entity" onClick={()=>{this.changeMouse('SELECTION')}}>
-                       <p>
-                            <SelectOutlined  className='icon'/>
-                           {/* <span>Select</span> */}
-                       </p>
-                   </li>
-                   {/* <li onClick={this.handleIntersection.bind(this)}>
-                       <p>
-                            <ScissorOutlined className='icon'/>
-                           <span>Intersect</span>
-                       </p>
-                   </li> */}
-                   <li title="Grid" onClick={this.toggleGrid.bind(this)}>
-                       <p>
-                            <TableOutlined className='icon'/>
-                           {/* <span>Grid</span> */}
-                       </p>
-                   </li>
-                   <li title="Delete entity" onClick={this.deleteCurves.bind(this)}>
-                       <p>
-                            <DeleteOutlined className='icon'/>
-                           {/* <span>Delete</span> */}
-                       </p>
-                   </li>
-                   <hr className="solid"/>
-                   <li title="Attributes manager" onClick={this.handleAttributes.bind(this)}>
-                       <p>
-                            <ToolOutlined className='icon' />
-                           {/* <span>Attributes</span> */}
-                       </p>
-                   </li>
-                   <hr className="solid"/>
-                   <li title="Create room" onClick={this.handleCreateRoom.bind(this)}>
-                       <p>
-                            <PlusSquareOutlined className='icon'/>
-                           {/* <span>Create Room</span> */}
-                       </p>
-                   </li>
-                   <li title="Join room" onClick={this.handleJoinRoom.bind(this)}>
-                       <p>
-                            <ApiOutlined className='icon' />
-                           {/* <span>Join Room</span> */}
-                       </p>
-                   </li>
-                   <hr className="solid"/>
-               </ul>
+               <div className='toolbox'>
+                    <p className='title'>Modeling</p> 
+                    <div className='items'>
+                        <span className={this.state.line ? 'item-selected' : 'item'} title="Insert line" onClick={()=>{this.changeMouse('COLLECTION')}}>
+                            <LineOutlined/> Line
+                        </span>
+                        <span className={this.state.select ? 'item-selected' : 'item'} title="Select entity" onClick={()=>{this.changeMouse('SELECTION')}}>
+                            <SelectOutlined/> Select
+                        </span>
+                        <span className='item' title="Delete entity" onClick={this.deleteCurves.bind(this)}>
+                            <DeleteOutlined /> Delete
+                        </span>
+                    </div>
+               </div>
+               <div className='toolbox'>
+                    <p className='title'>Canvas</p> 
+                    <div className='items'>
+                        <span className='item' title="toggle grid" onClick={this.toggleGrid.bind(this)}>
+                            <TableOutlined/> Toggle grid
+                        </span>
+                    </div>
+               </div>
+               <div className='toolbox'>
+                    <p className='title'>Attributes</p> 
+                    <div className='items'>
+                        <span className='item' title="attribute manager" onClick={this.handleAttributes.bind(this)}>
+                            <ToolOutlined /> Attribute manager
+                        </span>
+                    </div>
+               </div>
+               <div className='toolbox'>
+                    <p className='title'>Collaboration</p> 
+                    <div className='items'>
+                        <span className='item' title="create room" onClick={this.handleCreateRoom.bind(this)}>
+                            <PlusSquareOutlined /> Create room
+                        </span>
+                        <span className='item' title="join room" onClick={this.handleJoinRoom.bind(this)}>
+                            <ApiOutlined  /> Join room
+                        </span>
+                    </div>
+               </div>
+               <div className='toolbox'>
+                    <p className='title'>Mesh generation</p> 
+                    <div className='items'>
+                        <span className='item' title="create room" onClick={this.handleGenerateMesh.bind(this)}>
+                            <GiCobweb /> Mesh
+                        </span>
+                    </div>
+               </div>
            </div>
            
         );

@@ -1,63 +1,56 @@
 .navigation {
     position: relative;
-    width: 60px;
+    width: 256px;
     height: 100%;
     background: #C8C2C2;
     overflow: hidden;
 }
 
-.navigation ul {
-    position: absolute;
-    margin: 0;
-    padding: 0;
-    top: 0;
-    left: 0;
-    width: 100%;
-}
-
-.navigation ul li {
-    margin: 0;
-    height: 30px;
-    padding-top: 10px;
-    padding-bottom: 10px;
-    position: relative;
-    width: 100%;
-    list-style: none;
-}
-
-.navigation ul li:hover {
-    background: #909F9A;
-}
-
-.navigation ul li p {
-    position: relative;
-    margin: 0;
+.navigation > .toolbox {
     display: block;
-    height: 20px;
-    width: 100%;
+}
+
+.toolbox > .items {
     display: flex;
-    text-decoration: none;
-    color: #6A8BB4;
+    height: 50px;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    height: fit-content;
+    gap: 15px;
+    background: #d1cdcd;
+}
+
+.item { 
     cursor: pointer;
-}
-
-.navigation ul li p span {
+    transition: 0.5s;
+    padding: 2px;
     color: #6A8BB4;
 }
 
-.navigation ul li p .icon {
-    margin: 0;
-    padding: 0;
-    position: relative;
-    display: block;
-    min-width: 60px;
-    height: 20px;
-    line-height: 20px;
-    text-align: center;
+.item-selected { 
+    cursor: pointer;
+    transition: 0.5s;
+    color: #6A8BB4;
+    padding: 2px;
+    border-style: solid;
+    border-width: 1px;
 }
 
-.navigation hr {
-    margin: 5px;
-    padding: 0;
-    border-top: 1px solid #ffffff;
+.item-selected:hover { 
+    background: #b9b5b5;
+}
+
+.item:hover{
+    background: #b9b5b5;
+}
+
+.toolbox > .title {
+    width: 100%;
+    font-size: 16px;
+    font-weight: bold;
+    padding-left: 10px;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    color: #6A8BB4;
 }

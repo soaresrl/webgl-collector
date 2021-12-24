@@ -11,14 +11,14 @@
     width: auto;
     height: auto;
     display: grid;
-    grid-template-columns: 60px auto 300px;
+    grid-template-columns: 256px auto 300px;
 }
 
 .content-false {
     width: auto;
     height: auto;
     display: grid;
-    grid-template-columns: 60px auto;
+    grid-template-columns: 256px auto;
 }
 
 .grid-options-true {
@@ -30,6 +30,12 @@
     right: 310px;
 }
 
+.grid-options-true input {
+    margin: 2px;
+    height: 25px;
+    width: 50px;
+}
+
 .grid-options-false {
     position:absolute;
     display: grid;
@@ -39,20 +45,16 @@
     right: 10px;
 }
 
+.grid-options-false input {
+    height: 25px;
+    margin: 2px;
+    width: 50px;
+}
+
 .grid-snap span{
     color: #ffffff;
     font-family: 'Courier New', Courier, monospace;
 }
-
-.grid-input-x {
-    margin: 2px;
-    width: 25px;
-}
-
-.grid-input-y {
-    margin: 2px;
-    width: 25px;
-} 
 
 .connect{
     position:absolute;

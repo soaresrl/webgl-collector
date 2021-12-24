@@ -44,4 +44,67 @@ export const COLORS = {
     }
 }
 
+export const MESH = {
+    meshTypes: [
+        {
+            name: 'Bilinear Transfinite',
+            value: 1
+        },
+        {
+            name: 'Trilinear Transfinite',
+            value: 2
+        },
+        {
+            name: 'Quadrilateral Template',
+            value: 3
+        },
+        {
+            name: 'Quadrilateral Seam',
+            value: 4
+        },
+        {
+            name: 'Triangular Boundary Contraction',
+            value: 5
+        }
+    ],
+    shapeTypes: [
+        {
+            name: 'Triangular',
+            value: 1
+        },
+        {
+            name: 'Quadrilateral',
+            value: 2
+        }
+    ],
+    elemTypes: [
+        {
+            name: 'Linear',
+            value: 1
+        },
+        {
+            name: 'Quadratic',
+            value: 2
+        }
+    ],
+    diagTypes: [
+        {
+            name: 'Right',
+            value: 1
+        },
+        {
+            name: 'Left',
+            value: 2
+        },
+        {
+            name: 'Union Jack',
+            value: 3
+        },
+        {
+            name: 'Optimal',
+            value: 4
+        }
+    ]
+}
+
 export const PI = 3.14159265359;

@@ -1,7 +1,7 @@
 import React, { Component } from "react"
 import Draggable from 'react-draggable'
 import { CloseSquareOutlined } from '@ant-design/icons'
-import { Button } from 'antd'
+import { Button, Input } from 'antd'
 
 import { Prototype } from './Prototype'
 import './styles.css'
@@ -44,7 +44,6 @@ export default class Attributes extends Component{
 
     handleSelectedPrototype(e){
         const prototype = this.state.prototypes.find(p => p.type === e.target.value);
-
         this.setState({
             ...this.state,
             selectedPrototype: e.target.value,
@@ -52,13 +51,14 @@ export default class Attributes extends Component{
                 ...prototype,
                 properties: {
                     ...prototype.properties,
-                    'Color': {r: prototype.properties.Color[0], g: prototype.properties.Color[1], b: prototype.properties.Color[2]}
+                    'Color': {r: prototype.properties.Color[0] || 0, g: prototype.properties.Color[1] || 0, b: prototype.properties.Color[2] || 0}
                 }
             }
         })
     }
 
     handleChangeProperty(e, property, type){
+        console.log(e)
         if(property == 'Color'){
             this.setState({
                 ...this.state,
@@ -73,7 +73,6 @@ export default class Attributes extends Component{
         }
         else
         {
-
             if(type == 'int' || type == 'float'){
                 this.setState({
                     ...this.state,
@@ -81,7 +80,7 @@ export default class Attributes extends Component{
                         ...this.state.currentAttribute,
                         properties: {
                             ...this.state.currentAttribute.properties,
-                            [property]: e.target.value ? parseFloat(e.target.value) : 0
+                            [property]: e ? parseFloat(e) : 0
                         }
                     }
                 })
@@ -157,7 +156,7 @@ export default class Attributes extends Component{
                         {this.state.currentAttribute && 
                             <div className='prototypes'>
                                 <p> Name: </p>
-                                <input 
+                                <Input 
                                     placeholder="type attribute's name..." 
                                     onChange={this.handleChangeAttributeName}
                                 />

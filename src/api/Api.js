@@ -1,4 +1,4 @@
-import {io} from 'socket.io-client';
+import { io } from 'socket.io-client';
 import Line from '../curves/line';
 
 export default class Api {
@@ -44,27 +44,35 @@ export default class Api {
         });
 
         this.socket.on("update-model", (_model) => {
+            console.log(_model);
             const edges = [];
             const vertices = [
                 ..._model.vertices
             ];
+            const meshes = [
+                ..._model.meshes
+            ]
 
             _model.edges.forEach(edge => {
                 let new_line = new Line(edge.points[0][0], edge.points[0][1], edge.points[1][0], edge.points[1][1], edge.attributes);
                 new_line.selected = edge.selected;
                 edges.push(new_line);
             });
-            
+
             model.curves = [];
             model.curves = edges;
             model.vertices = vertices;
+            model.meshes = meshes
+            updateCanvas();
             
             this.getTriangs();
-            this.getAttributeSymbols();
+            // this.getAttributeSymbols();
         });
 
         this.socket.on('tesselation', (data) => {
             model.patches = data;
+
+            updateCanvas();
         });
 
         this.socket.on('message', (message)=>{
@@ -75,10 +83,10 @@ export default class Api {
             this.subFunctions[0](prototypes);
         })
 
-        this.socket.on('receive-symbols', (symbols)=>{
+        /* this.socket.on('receive-symbols', (symbols)=>{
             model.attributes_symbols = symbols;
             updateCanvas();
-        })
+        }) */
     }
 
     insertCurve(curve){
@@ -128,5 +136,9 @@ export default class Api {
 
     getAttributeSymbols(){
         this.socket.emit('get-attribute-symbols');
+    }
+
+    generateMesh(meshInfo){
+        this.socket.emit('generate-mesh', meshInfo);
     }
 }

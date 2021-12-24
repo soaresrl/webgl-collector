@@ -1,7 +1,5 @@
 import React, { Component } from "react"
-import Draggable from 'react-draggable'
-import {CloseSquareOutlined} from '@ant-design/icons'
-import {Button} from 'antd'
+import { Input, Modal } from 'antd'
 import './styles.css'
 
 export default class CreateRoom extends Component{
@@ -25,6 +23,10 @@ export default class CreateRoom extends Component{
     handleCreateRoom(){
         this.props.setUsername(this.state.username);
         this.props.Api.createRoom();
+        this.setState({
+            ...this.state,
+            isModalVisible: false
+        })
     }
     
     handleInputChange(e){
@@ -36,21 +38,14 @@ export default class CreateRoom extends Component{
 
     render(){
         return(
-            this.state.isModalVisible && <Draggable>
-                <div className='create-room'>
-                    <div className='title'>
-                        <h4>Create Room</h4>
-                        <CloseSquareOutlined onClick={this.handleCancel.bind(this)} className='icon' />
-                    </div>
-                    <hr className="solid"/>
-                    <div className='content'>
-                        <p> Username </p>
-                        <input value={this.state.username} onChange={this.handleInputChange.bind(this)} placeholder="Type an username..."/>
-                        <Button onClick={this.handleCancel.bind(this)} danger >Cancel</Button>
-                        <Button onClick={this.handleCreateRoom.bind(this)} type='primary'>Create</Button>
-                    </div>
-                </div>
-            </Draggable>
+            <Modal 
+            title="Create Room" 
+            visible={this.state.isModalVisible}
+            onOk={this.handleCreateRoom.bind(this)}
+            onCancel={this.handleCancel.bind(this)}>
+                    <span>Username:</span>
+                    <Input value={this.state.username} onChange={this.handleInputChange.bind(this)} placeholder="Type an username..."/>
+            </Modal>
         );
     }
 }

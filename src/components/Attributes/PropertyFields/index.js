@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Radio } from 'antd'
+import { Checkbox, Input, InputNumber, Radio } from 'antd'
 import { SketchPicker } from 'react-color'
 
 export default class PropertyField extends Component {
@@ -10,26 +10,25 @@ export default class PropertyField extends Component {
     renderPropertyField( property, type){
         switch (type) {
             case "float":
-                return (<input 
+                return (<InputNumber
                             value={this.props.attribute.properties[property]}
-                            type='number' 
                             step="0.01"
+                            size='small'
                             onChange={(e)=>{this.props.handleChangeProperty(e, property, type)}}
-                        ></input>)
+                        ></InputNumber>)
             
             case "int":
-                return (<input 
+                return (<InputNumber 
+                            size='small'
                             value={this.props.attribute.properties[property]}
-                            type='number' 
                             onChange={(e)=>{this.props.handleChangeProperty(e, property, type)}}
-                        ></input>)
+                        ></InputNumber>)
             
             case "bool":
-                return (<input 
-                            value={this.props.attribute.properties[property]}
-                            type='checkbox'    
+                return (<Checkbox 
+                            checked={this.props.attribute.properties[property]}
                             onChange={(e)=>{this.props.handleChangeProperty(e, property, type)}}
-                        ></input>)
+                        ></Checkbox>)
 
             case "color":
                 return (<SketchPicker 
@@ -46,7 +45,8 @@ export default class PropertyField extends Component {
                         </Radio.Group>)
             
             case "string":
-                return( <input type='text' value={this.props.attribute.properties[property]}></input>)
+                return( <Input value={this.props.attribute.properties[property]}
+                            size='small' />)
         
             default:
                 break;

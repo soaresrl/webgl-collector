@@ -254,6 +254,17 @@ export default class Canvas extends Component {
 
     }
 
+    makeDisplayMeshes(){
+        const { meshes } = this.props.model;
+
+        if(!!meshes){
+            for (const mesh of meshes) {
+                const { lines } = mesh;
+                this.drawLines(lines, [0.0, 0.0, 0.0]);
+            }
+        }
+    }
+
     makeDisplayAttributeSymbol(attribute, scale, type, entity){
         switch (type) {
             case 'point':
@@ -485,6 +496,8 @@ export default class Canvas extends Component {
         const oX = 0.0, oY = 0.0;
         let x = this.left;
         let y = this.bottom;
+
+        if(this.top - this.bottom > 100.0 || this.right - this.left > 100.0) return;
 
         const {gridX, gridY} = this.grid.getGridSpace();
         x = oX - (parseInt((oX - this.left)/gridX) * gridX) - gridX;
@@ -911,12 +924,12 @@ export default class Canvas extends Component {
     }
 
     onWheel(event){
-        if(event.deltaY > 0){
-            this.scaleWorldWindow(event.deltaY / 105);
+        if(event.deltaY > 0.0){
+            this.scaleWorldWindow((event.deltaY <= 100 ? Math.abs(event.deltaY) : 100) / 105);
         }
-        else
+        else if(event.deltaY < 0.0)
         {
-            this.scaleWorldWindow((-1) * event.deltaY * 1.05 / 100);
+            this.scaleWorldWindow((event.deltaY >= -100 ? Math.abs(event.deltaY) : 100) * 1.05 / 100);
         }
         this.paint();
     }
@@ -947,21 +960,26 @@ export default class Canvas extends Component {
             this.right = bbox.xmax;
             this.top = bbox.ymax;
             this.bottom = bbox.ymin;
-
-            this.scaleWorldWindow(1.1);
-
-            this.paint();
+        } else {
+            this.left = -5.0;
+            this.right = 5.0;
+            this.top = 5.0;
+            this.bottom = -5.0;
         }
+        
+        this.scaleWorldWindow(1.1);
+        this.paint();
     }
 
     paint(){    
 
         this.gl.clearColor(0.1, 0.1, 0.1, 1);
         this.gl.clear(this.gl.COLOR_BUFFER_BIT);
-
+        console.log("paint")
         this.makeDisplayPatches();
-        this.makeDisplayCurves();
         this.makeDisplayVertices();
+        this.makeDisplayMeshes();
+        this.makeDisplayCurves();
         /* this.makeDisplayAttributes(); */
         this.state.viewGrid && this.makeDisplayGrid();
         this.drawCollectedCurve();

@@ -1,3 +1,4 @@
+import { Input } from "antd";
 import React, { Component } from "react";
 import Command from '../../business/CommandLine'
 import  './styles.css'
@@ -42,7 +43,7 @@ export default class CommandLine extends Component{
     render(){
         return(
             <div className='command-content'> 
-                <input 
+                <Input 
                     placeholder='Type a command...' 
                     value={this.state.actualCommand}
                     onKeyUp={this.handleFinishEdit.bind(this)}

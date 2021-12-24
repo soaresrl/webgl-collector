@@ -2,7 +2,7 @@ import React, { Component, createRef } from 'react';
 import Canvas from '../components/Canvas/Canvas';
 import Header from '../components/Header/Header';
 import SideMenu from '../components/Menu/SideMenu';
-import { Checkbox } from 'antd';
+import { Checkbox, Input } from 'antd';
 import './Home.css';
 import RoomModal from '../components/RoomModal';
 import CameraOptions from '../components/CameraOptions';
@@ -10,6 +10,7 @@ import Attributes from '../components/Attributes';
 import Messages from '../components/Messages';
 import CreateRoom from '../components/CreateRoom';
 import CommandLine from '../components/CommandLine';
+import MeshManager from '../components/MeshManager';
 
 export default class Home extends Component {
     constructor(props){
@@ -25,6 +26,7 @@ export default class Home extends Component {
         this.attributesRef = createRef();
         this.messagesRef = createRef();
         this.createRoomRef = createRef();
+        this.meshModalRef = createRef();
         // Bind handle functions
         this.changeMouseAction = this.changeMouseAction.bind(this);
         this.updateMessages = this.updateMessages.bind(this);
@@ -104,6 +106,7 @@ export default class Home extends Component {
                             attributesRef = {this.attributesRef} 
                             roomModalRef = {this.roomModalRef} 
                             createRoomRef = {this.createRoomRef}
+                            meshModalRef = {this.meshModalRef}
                             Api = {this.props.Api} 
                             canvasRef = {this.canvasRef}
                             model = {this.props.model} 
@@ -130,12 +133,12 @@ export default class Home extends Component {
                         />
                         <div className={`grid-options-${this.props.room.hasRoom}`}>
                             <Checkbox onChange={this.toggleSnap.bind(this)} className='grid-snap'>Snap</Checkbox>
-                            <input 
+                            <Input 
                                 onChange={this.changeSnapDataX.bind(this)} 
                                 placeholder='1.0' 
                                 className='grid-input-x'
                             />
-                            <input 
+                            <Input 
                                 onChange={this.changeSnapDataY.bind(this)} 
                                 placeholder='1.0' 
                                 className='grid-input-y'
@@ -154,6 +157,11 @@ export default class Home extends Component {
                     Api={this.props.Api} 
                     ref={this.createRoomRef} 
                     setUsername={this.props.setUsername} 
+                />
+
+                <MeshManager
+                    Api={this.props.Api} 
+                    ref={this.meshModalRef} 
                 />
 
                 {this.state.isAttributeVisible && <Attributes 

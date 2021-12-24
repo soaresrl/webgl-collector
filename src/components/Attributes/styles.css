@@ -1,6 +1,7 @@
 .attributes-content{
     position: absolute;
     display: grid;
+    width: 340px;
     grid-template-rows: auto auto;
     top: 110px;
     right: 10px;
@@ -44,9 +45,8 @@
     color: black;
 }
 
-.attributes-content .content{
+.attributes-content > .content{
     display: grid;
-    text-align:center;
     padding: 2px;
     grid-template-rows: auto auto;
     grid-template-columns: auto;
@@ -55,11 +55,6 @@
 .attributes-content p{
     margin:5px;
     margin-right:15px;
-    margin-bottom: 10px;
-    padding: 0;
-}
-.attributes-content input {
-    margin:5px;
     margin-bottom: 10px;
     padding: 0;
 }
