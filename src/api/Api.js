@@ -44,7 +44,6 @@ export default class Api {
         });
 
         this.socket.on("update-model", (_model) => {
-            console.log(_model);
             const edges = [];
             const vertices = [
                 ..._model.vertices

@@ -58,7 +58,6 @@ export default class Attributes extends Component{
     }
 
     handleChangeProperty(e, property, type){
-        console.log(e)
         if(property == 'Color'){
             this.setState({
                 ...this.state,
@@ -140,7 +139,7 @@ export default class Attributes extends Component{
 
     render(){
         return(
-            <Draggable>
+            <Draggable disabled={true}>
                 <div className='attributes-content'>
                     <div className='title'>
                         <h4>Attributes</h4>

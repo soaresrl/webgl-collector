@@ -23,6 +23,14 @@ export default class MeshManager extends Component {
         const obj = MESH[item].find((obj) => obj.name == value);
 
         let newState = { ...this.state };
+
+        if(item == 'meshTypes'){
+            if(value == 'Triangular Boundary Contraction'){
+                newState.selectedMesh.shapeTypes = MESH.shapeTypes.find((obj) => obj.name == "Triangular");
+            } else if(value == 'Quadrilateral Template' || value == 'Quadrilateral Seam'){
+                newState.selectedMesh.shapeTypes = MESH.shapeTypes.find((obj) => obj.name == "Quadrilateral");
+            }
+        } 
         
         newState.selectedMesh[item] = { ...obj };
         
@@ -71,10 +79,15 @@ export default class MeshManager extends Component {
                     </div>
                     <div className='mesh-container'>
                         <span className='mesh-container-item'>Shape type</span>
-                        <Select className='mesh-container-item' style={{ width: 200 }} placeholder='Select shape type...' value={this.state.selectedMesh.shapeTypes?.name} onChange={(value)=>{this.handleSelectChange(value, 'shapeTypes')}}>
-                            {MESH.shapeTypes.map(({ name }, index)=>(
-                                <Select.Option value={name} key={`${index}-mesh-type`}> {name} </Select.Option>
-                            ))}
+                        <Select className='mesh-container-item' 
+                            style={{ width: 200 }} 
+                            placeholder='Select shape type...' 
+                            disabled={this.state.selectedMesh.meshTypes?.name == 'Triangular Boundary Contraction' || this.state.selectedMesh.meshTypes?.name == 'Quadrilateral Template' || this.state.selectedMesh.meshTypes?.name == 'Quadrilateral Seam'} 
+                            value={this.state.selectedMesh.shapeTypes?.name} 
+                            onChange={(value)=>{this.handleSelectChange(value, 'shapeTypes')}}>
+                                {MESH.shapeTypes.map(({ name }, index)=>(
+                                    <Select.Option value={name} key={`${index}-mesh-type`}> {name} </Select.Option>
+                                ))}
                         </Select>
                     </div>
                     <div className='mesh-container'>
@@ -88,14 +101,14 @@ export default class MeshManager extends Component {
                     <div className='mesh-container'>
                         <span className='mesh-container-item'>Diagonal type</span>
                         <Select className='mesh-container-item' 
-                                style={{ width: 200 }} 
-                                placeholder='Select diagonal type...' 
-                                disabled={this.state.selectedMesh.shapeTypes?.name != 'Triangular'}
-                                value={this.state.selectedMesh.diagTypes?.name}
-                                onChange={(value)=>{this.handleSelectChange(value, 'diagTypes')}}>
-                            {MESH.diagTypes.map(({ name }, index)=>(
-                                <Select.Option value={name} key={`${index}-mesh-type`}> {name} </Select.Option>
-                            ))}
+                            style={{ width: 200 }} 
+                            placeholder='Select diagonal type...' 
+                            disabled={this.state.selectedMesh.shapeTypes?.name != 'Triangular' || this.state.selectedMesh.meshTypes?.name == 'Triangular Boundary Contraction'}
+                            value={this.state.selectedMesh.diagTypes?.name}
+                            onChange={(value)=>{this.handleSelectChange(value, 'diagTypes')}}>
+                                {MESH.diagTypes.map(({ name }, index)=>(
+                                    <Select.Option value={name} key={`${index}-mesh-type`}> {name} </Select.Option>
+                                ))}
                         </Select>
                     </div>
                 </div>

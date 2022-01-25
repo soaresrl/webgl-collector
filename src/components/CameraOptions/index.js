@@ -49,17 +49,17 @@ export default class CameraOptions extends Component{
                 <div title="Zoom out" onClick={this.handleZoomOut.bind(this)} className='option'>
                     <MinusOutlined className='icon'/>
                 </div>
-                <div title="Pan down" onClick={this.handlePanDown.bind(this)} className='option'>
-                    <DownOutlined className='icon'/>
-                </div>
                 <div title="Pan up" onClick={this.handlePanUp.bind(this)} className='option'>
                     <UpOutlined className='icon'/>
                 </div>
-                <div title="Pan left" onClick={this.handlePanLeft.bind(this)} className='option'>
-                    <LeftOutlined className='icon'/>
+                <div title="Pan down" onClick={this.handlePanDown.bind(this)} className='option'>
+                    <DownOutlined className='icon'/>
                 </div>
                 <div title="Pan right" onClick={this.handlePanRight.bind(this)} className='option'>
                     <RightOutlined className='icon'/>
+                </div>
+                <div title="Pan left" onClick={this.handlePanLeft.bind(this)} className='option'>
+                    <LeftOutlined className='icon'/>
                 </div>
                 <div title="Fit to view" onClick={this.handleFitToView.bind(this)} className='option'>
                     <FullscreenOutlined className='icon'/>

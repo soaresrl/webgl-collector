@@ -198,14 +198,14 @@ export default class AttribSymbols {
 
         if(properties['Fy'] != 0){
             if(properties['Fy'] < 0){
-                const { line, triangle } = AttribSymbols.arrowSymbol(pt, scale, 270);
+                const { line, triangle } = AttribSymbols.arrowSymbol(pt, scale, 90);
                 
                 lines.push(line);
                 triangles.push(triangle);
             }
             else
             {
-                const { line, triangle } = AttribSymbols.arrowSymbol(pt, scale, 90);
+                const { line, triangle } = AttribSymbols.arrowSymbol(pt, scale, 270);
                 
                 lines.push(line);
                 triangles.push(triangle);
@@ -223,7 +223,7 @@ export default class AttribSymbols {
             else
             {
                 const circle = AttribSymbols.arcCircleSymbol(pt, scale);
-                const triangle = AttribSymbols.triangleSymbol(circle[circle.length], scale * 0.5, 90);
+                const triangle = AttribSymbols.triangleSymbol(circle[circle.length-1], scale * 0.5, 90);
                 
                 circles.push(circle);
                 triangles.push(triangle);
@@ -264,7 +264,7 @@ export default class AttribSymbols {
                             angle = -angle + 180;
                         }
                     }
-                    const { lines, triangles } = AttribSymbols.arrowSegment(scale*0.45, displac, 0.2, 0.1, 0.9, auxLine, angle, true);
+                    const { lines, triangles } = AttribSymbols.arrowSegment(scale*0.5, displac, 0.2, 0, 1, auxLine, angle, true);
 
                     symbolLines.push(lines);
                     symbolTriangles.push(triangles);
@@ -276,7 +276,7 @@ export default class AttribSymbols {
                         angle = AttribSymbols.getAngWithXDirec(v);
                         if(!(points[1].y < points[0].y)) angle = - angle;
                     }
-                    const { lines, triangles } = AttribSymbols.arrowSegment(scale*0.45, displac, 0.2, 0.1, 0.9, auxLine, angle, false);
+                    const { lines, triangles } = AttribSymbols.arrowSegment(scale*0.5, displac, 0.2, 0, 1, auxLine, angle, false);
 
                     symbolLines.push(lines);
                     symbolTriangles.push(triangles);

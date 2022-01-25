@@ -975,7 +975,6 @@ export default class Canvas extends Component {
 
         this.gl.clearColor(0.1, 0.1, 0.1, 1);
         this.gl.clear(this.gl.COLOR_BUFFER_BIT);
-        console.log("paint")
         this.makeDisplayPatches();
         this.makeDisplayVertices();
         this.makeDisplayMeshes();

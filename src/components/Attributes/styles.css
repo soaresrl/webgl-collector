@@ -3,8 +3,8 @@
     display: grid;
     width: 340px;
     grid-template-rows: auto auto;
-    top: 110px;
-    right: 10px;
+    top: 66px;
+    left: 262px;
     background:  #C8C2C2;
 }
 

@@ -9,7 +9,7 @@ export default class Header extends Component {
             <div className='header-content'>
                 <div>
                     <img src={brasao} className='header-logo'/>
-                    <span className='header-title' >Web Curve Collector - PUC-Rio</span>
+                    <span className='header-title' >Web Mesh Generator - PUC-Rio</span>
                 </div>
                 
                 <div> 
