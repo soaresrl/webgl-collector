@@ -70,7 +70,6 @@ export default class Api {
 
         this.socket.on('tesselation', (data) => {
             model.patches = data;
-
             updateCanvas();
         });
 
@@ -132,6 +131,11 @@ export default class Api {
     applyAttribute(attribute){
         this.socket.emit('apply-attribute', attribute);
     }
+
+    /* getAttibutes(handle_attributes){
+        this.socket.emit('get-attributes');
+        this.subscribe(handle_attributes);
+    } */
 
     getAttributeSymbols(){
         this.socket.emit('get-attribute-symbols');

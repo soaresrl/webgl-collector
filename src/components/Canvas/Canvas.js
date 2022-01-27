@@ -224,7 +224,21 @@ export default class Canvas extends Component {
                 this.gl.uniform4fv(this.colorLocation, COLORS.PATCH_COLORS.selected);
             }
             else if(patch.isDeleted){
-                this.gl.uniform4fv(this.colorLocation, [0.1, 0.1, 0.1, 1])
+                this.gl.uniform4fv(this.colorLocation, [0.95, 0.95, 0.95, 1.0])
+            }
+            else if(patch.attributes.length != 0){
+                for(let i = 0; i < patch.attributes.length;  i++){
+                    //const { attribute } = patch.attributes[i]
+                    if(patch.attributes[i].type == 'Material'){
+                        const color =   [
+                                        patch.attributes[i].properties.Color[0]/255, 
+                                        patch.attributes[i].properties.Color[1]/255, 
+                                        patch.attributes[i].properties.Color[2]/255, 1.0
+                                        ]
+                        this.gl.uniform4fv(this.colorLocation, color);
+                        break;
+                    }
+                }
             }
             else {
                 this.gl.uniform4fv(this.colorLocation, COLORS.PATCH_COLORS.default)
@@ -458,7 +472,7 @@ export default class Canvas extends Component {
         this.gl.enableVertexAttribArray(this.positionAttributeLocation);
         this.gl.vertexAttribPointer(this.positionAttributeLocation, 3, this.gl.FLOAT, false, 0, 0);
 
-        this.gl.uniform4fv(this.colorLocation, [1.0,0.0,0.0,1]);
+        this.gl.uniform4fv(this.colorLocation, [1.0,0.0,0.0,1.0]);
 
         this.gl.drawArrays(this.gl.LINES, 0, pCoords.length/3);
     }
@@ -525,7 +539,7 @@ export default class Canvas extends Component {
         this.gl.enableVertexAttribArray(this.positionAttributeLocation);
         this.gl.vertexAttribPointer(this.positionAttributeLocation, 3, this.gl.FLOAT, false, 0, 0);
 
-        this.gl.uniform4fv(this.colorLocation, [0,0,0,0]);
+        this.gl.uniform4fv(this.colorLocation, [0.0,0.0,0.0,1.0]);
         this.gl.uniform1f(this.pointSizeLocation, 1.0);
         this.gl.drawArrays(this.gl.POINTS, 0, vertices.length/3);
 
@@ -537,7 +551,7 @@ export default class Canvas extends Component {
         this.gl.enableVertexAttribArray(this.positionAttributeLocation);
         this.gl.vertexAttribPointer(this.positionAttributeLocation, 3, this.gl.FLOAT, false, 0, 0);
 
-        this.gl.uniform4fv(this.colorLocation, [0,0,0,0]);
+        this.gl.uniform4fv(this.colorLocation, [0.0,0.0,0.0,1.0]);
 
         this.gl.drawArrays(this.gl.LINES, 0, 4);
     } 
@@ -973,7 +987,7 @@ export default class Canvas extends Component {
 
     paint(){    
 
-        this.gl.clearColor(0.1, 0.1, 0.1, 1);
+        this.gl.clearColor(0.95, 0.95, 0.95, 1.0);
         this.gl.clear(this.gl.COLOR_BUFFER_BIT);
         this.makeDisplayPatches();
         this.makeDisplayVertices();

@@ -175,6 +175,17 @@ export default class SideMenu extends Component {
                         </span>
                     </div>
                </div>
+               {/* <div className='created-attributes'>
+                    <p className='title'>Attributes</p>
+                    <div className='attributes'>
+                        <select>{this.props.attributes?.map((attribute)=>{
+                            return(<option key={attribute.name}>{attribute.name}</option>)
+                        })}</select>
+                    </div>
+                    <div className='items'>
+                        
+                    </div>
+               </div> */}
            </div>
            
         );

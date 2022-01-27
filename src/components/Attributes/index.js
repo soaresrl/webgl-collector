@@ -21,6 +21,7 @@ export default class Attributes extends Component{
         this.handleReceivePrototypes = this.handleReceivePrototypes.bind(this);
         this.handleChangeProperty = this.handleChangeProperty.bind(this);
         this.handleChangeAttributeName = this.handleChangeAttributeName.bind(this);
+        this.handleSelectedPrototype = this.handleSelectedPrototype.bind(this);
     }
 
     componentDidMount(){
@@ -40,13 +41,15 @@ export default class Attributes extends Component{
             ...this.state,
             prototypes
         })
+
+        this.handleSelectedPrototype(this.state.prototypes[0].type)
     }
 
-    handleSelectedPrototype(e){
-        const prototype = this.state.prototypes.find(p => p.type === e.target.value);
+    handleSelectedPrototype(type){
+        const prototype = this.state.prototypes.find(p => p.type === type);
         this.setState({
             ...this.state,
-            selectedPrototype: e.target.value,
+            selectedPrototype: type,
             currentAttribute: {
                 ...prototype,
                 properties: {
@@ -133,6 +136,13 @@ export default class Attributes extends Component{
             }
         }
 
+        /* this.setState({
+            ...this.state,
+            attributes: changedAttribute
+        }); */
+
+        // this.props.addAttribute(changedAttribute);
+
         this.props.Api.applyAttribute(changedAttribute);
         this.props.Api.getAttributeSymbols();
     }
@@ -147,7 +157,7 @@ export default class Attributes extends Component{
                     </div>
                     <hr className="solid"/>
                     <div className='content'>
-                        <select onChange={this.handleSelectedPrototype.bind(this)}>
+                        <select onChange={(e)=>{this.handleSelectedPrototype(e.target.value)}}>
                             {this.state.prototypes.map((attribute, index)=>(
                                 <option value={attribute.type} key={`${index}-type`}> {attribute.type} </option>
                             ))}

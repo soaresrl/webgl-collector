@@ -19,7 +19,8 @@ export default class Home extends Component {
 
         this.state = {
             mouseAction: null,
-            isAttributeVisible: false
+            isAttributeVisible: false/* ,
+            attributes: [] */
         }
         this.canvasRef = createRef();
         this.roomModalRef = createRef();
@@ -32,6 +33,7 @@ export default class Home extends Component {
         this.updateMessages = this.updateMessages.bind(this);
         this.setAttibuteVisible = this.setAttibuteVisible.bind(this);
         this.setAttibuteNotVisible = this.setAttibuteNotVisible.bind(this);
+        // this.addAttribute = this.addAttribute.bind(this);
     }
 
     componentDidUpdate(prevProps, prevState){
@@ -81,6 +83,13 @@ export default class Home extends Component {
         this.canvasRef.current.paint();
     }
 
+    /* addAttribute(newAttribute){
+        this.setState({
+            ...this.state,
+            attributes: [...this.state.attributes, newAttribute]
+        })
+    } */
+
     setAttibuteVisible(){
         this.setState({
             ...this.state,
@@ -104,6 +113,7 @@ export default class Home extends Component {
                         <SideMenu 
                             connected = {this.props.connected}
                             attributesRef = {this.attributesRef} 
+                            // attributes = {this.state.attributes}
                             roomModalRef = {this.roomModalRef} 
                             createRoomRef = {this.createRoomRef}
                             meshModalRef = {this.meshModalRef}
@@ -168,6 +178,7 @@ export default class Home extends Component {
                     Api={this.props.Api} 
                     model={this.props.model}
                     setAttibuteNotVisible = {this.setAttibuteNotVisible}
+                    // addAttribute = {this.addAttribute}
                     ref={this.attributesRef} 
                 />}
 
