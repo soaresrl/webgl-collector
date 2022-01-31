@@ -16,7 +16,8 @@ export default class Canvas extends Component {
         // Set react component initial state
         this.state = {
             viewGrid: false,
-            is_SnapOn: false
+            is_SnapOn: false,
+            isShiftPressed: false
         }
 
         // Set app data structure
@@ -34,6 +35,24 @@ export default class Canvas extends Component {
 
         this.mouseMoveTol = 1;
         this.pickTolFac = 0.01;
+
+        window.addEventListener('keydown', (e)=>{
+            if(e.key != 'Shift') return;
+
+            this.setState({
+                ...this.state,
+                isShiftPressed: true
+            });
+        });
+
+        window.addEventListener('keyup', (e)=>{
+            if(e.key != 'Shift') return;
+
+            this.setState({
+                ...this.state,
+                isShiftPressed: false
+            });
+        });
 
     }
 
@@ -648,7 +667,7 @@ export default class Canvas extends Component {
 
                             const tol = max_size*this.pickTolFac;
                             
-                            this.props.Api.selectPick(this.pt1W.x, this.pt1W.y, tol);
+                            this.props.Api.selectPick(this.pt1W.x, this.pt1W.y, tol, this.state.isShiftPressed);
                         }
                         else
                         {
@@ -657,8 +676,8 @@ export default class Canvas extends Component {
                             const ymin = (this.pt0W.y < this.pt1W.y) ? this.pt0W.y : this.pt1W.y;
                             const ymax = (this.pt0W.y > this.pt1W.y) ? this.pt0W.y : this.pt1W.y;
 
-                            this.props.model.selectFence(xmin, xmax, ymin, ymax); 
-                            this.props.Api.selectFence(xmin, xmax, ymin, ymax); // TODO: FIX
+                            //this.props.model.selectFence(xmin, xmax, ymin, ymax); 
+                            this.props.Api.selectFence(xmin, xmax, ymin, ymax, this.state.isShiftPressed); // TODO: FIX
                         }
                     }
                     this.paint();

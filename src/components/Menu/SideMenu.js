@@ -3,6 +3,8 @@ import { LineOutlined, SelectOutlined, ApiOutlined, PlusSquareOutlined, TableOut
         DeleteOutlined/* , ScissorOutlined */, ToolOutlined} from '@ant-design/icons';
 import { GiCobweb } from 'react-icons/gi'
 import { notification } from 'antd';
+import PropertyField from "../Attributes/PropertyFields"
+
 import './Menu.css';
 
 export default class SideMenu extends Component {
@@ -12,8 +14,15 @@ export default class SideMenu extends Component {
 
         this.state = {
             line: false,
-            select: false
+            select: false,
+            selectedAttribute: null
         }
+
+        this.handleSelectAttribute = this.handleSelectAttribute.bind(this);
+        this.handleChangeProperty = this.handleChangeProperty.bind(this);
+        this.handleSetAttribute = this.handleSetAttribute.bind(this);
+        this.handleRemoveAttribute = this.handleRemoveAttribute.bind(this);
+        this.handleSaveAttribute = this.handleSaveAttribute.bind(this);
     }
 
     changeMouse(mouseAction){
@@ -123,6 +132,121 @@ export default class SideMenu extends Component {
         });
     }
 
+    handleSelectAttribute(name){
+        const selectedAttribute = this.props.attributes.find((att) => att.name === name);
+
+        if(selectedAttribute){
+            this.setState({
+                ...this.state,
+                selectedAttribute: {
+                    ...selectedAttribute,
+                    properties: {
+                        ...selectedAttribute.properties,
+                        'Color': {r: selectedAttribute.properties.Color[0] || 0, g: selectedAttribute.properties.Color[1] || 0, b: selectedAttribute.properties.Color[2] || 0}
+                    }
+                }
+            });
+        } else {
+            this.setState({
+                ...this.state,
+                selectedAttribute: null
+            }); 
+        }
+        
+    }
+
+    handleChangeProperty(e, property, type){
+        if(property == 'Color'){
+            this.setState({
+                ...this.state,
+                selectedAttribute: {
+                    ...this.state.selectedAttribute,
+                    properties: {
+                        ...this.state.selectedAttribute.properties,
+                        [property]: e.rgb
+                    }
+                }
+            })
+        }
+        else
+        {
+            if(type == 'int' || type == 'float'){
+                this.setState({
+                    ...this.state,
+                    selectedAttribute: {
+                        ...this.state.selectedAttribute,
+                        properties: {
+                            ...this.state.selectedAttribute.properties,
+                            [property]: e ? parseFloat(e) : 0
+                        }
+                    }
+                })
+            }
+            else if(type == 'bool')
+            {
+                this.setState({
+                    ...this.state,
+                    selectedAttribute: {
+                        ...this.state.selectedAttribute,
+                        properties: {
+                            ...this.state.selectedAttribute.properties,
+                            [property]: e.target.checked
+                        }
+                    }
+                })
+            }
+            else {
+                this.setState({
+                    ...this.state,
+                    selectedAttribute: {
+                        ...this.state.selectedAttribute,
+                        properties: {
+                            ...this.state.selectedAttribute.properties,
+                            [property]: e.target.value
+                        }
+                    }
+                })
+            }
+            
+        }
+    }
+
+    handleSetAttribute(){
+        let attribute = this.state.selectedAttribute;
+        
+        const changedAttribute = {
+            ...attribute,
+            properties: {
+                ...attribute.properties,
+                Color: [attribute.properties.Color.r, attribute.properties.Color.g, attribute.properties.Color.b]
+            }
+        }
+
+        this.props.Api.applyAttribute(changedAttribute);
+    }
+
+    handleSaveAttribute(){
+        let attribute = this.state.selectedAttribute;
+        
+        const changedAttribute = {
+            ...attribute,
+            properties: {
+                ...attribute.properties,
+                Color: [attribute.properties.Color.r, attribute.properties.Color.g, attribute.properties.Color.b]
+            }
+        }
+
+        this.props.updateAttribute(changedAttribute);
+        this.props.Api.updateAttribute(changedAttribute);
+    }
+
+    handleRemoveAttribute(){
+        let attribute = this.state.selectedAttribute;
+
+        this.props.Api.removeAttribute(attribute.name);
+        this.props.removeAttribute(attribute.name);
+    }
+
     render() {
         return (
            <div className='navigation'>
@@ -148,14 +272,14 @@ export default class SideMenu extends Component {
                         </span>
                     </div>
                </div>
-               <div className='toolbox'>
+               {/* <div className='toolbox'>
                     <p className='title'>Attributes</p> 
                     <div className='items'>
                         <span className='item' title="attribute manager" onClick={this.handleAttributes.bind(this)}>
                             <ToolOutlined /> Attribute manager
                         </span>
                     </div>
-               </div>
+               </div> */}
                <div className='toolbox'>
                     <p className='title'>Collaboration</p> 
                     <div className='items'>
@@ -175,17 +299,35 @@ export default class SideMenu extends Component {
                         </span>
                     </div>
                </div>
-               {/* <div className='created-attributes'>
-                    <p className='title'>Attributes</p>
+               <div className='created-attributes'>
+                    <p className='title'>Attributes  <PlusSquareOutlined title='Create new attribute' onClick={this.handleAttributes.bind(this)}/></p>
                     <div className='attributes'>
-                        <select>{this.props.attributes?.map((attribute)=>{
-                            return(<option key={attribute.name}>{attribute.name}</option>)
+                        <select value={this.state.selectedAttribute?.name} 
+                                onChange={e => this.handleSelectAttribute(e.target.value)}>
+                            {this.props.attributes?.map((attribute)=>{
+                                return(<option key={attribute.name}>{attribute.name}</option>)
                         })}</select>
                     </div>
                     <div className='items'>
-                        
+                        {this.state.selectedAttribute && 
+                        Object.keys(this.state.selectedAttribute?.properties).map((property, index) => 
+                        (<div key={`att-${property}-${index}`} className='properties'>
+                            <p>{property}</p>
+                            <PropertyField 
+                            key={`${property}-${index}-field`}
+                            attribute={this.state.selectedAttribute} 
+                            handleChangeProperty={this.handleChangeProperty} 
+                            property={property}
+                            type={this.state.selectedAttribute['properties-type'][index]}
+                        />
+                        </div>))}
                     </div>
-               </div> */}
+                    <div className='action-buttons'>
+                        <button onClick={this.handleSetAttribute}>Set</button>
+                        <button onClick={this.handleRemoveAttribute}>Delete</button>
+                        <button onClick={this.handleSaveAttribute}>Save</button>
+                    </div>
+               </div>
            </div>
            
         );

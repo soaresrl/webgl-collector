@@ -1,7 +1,7 @@
 .attributes-content{
     position: absolute;
     display: grid;
-    width: 340px;
+    width: 356px;
     grid-template-rows: auto auto;
     top: 66px;
     left: 262px;
@@ -15,6 +15,7 @@
     margin: 0;
     padding: 0;
     height: 40px;
+    cursor: move;
 }
 
 .title h4{
@@ -23,7 +24,7 @@
     margin-top: 10px;
     color: #C8C2C2;
     font-family: 'Courier New', Courier, monospace;
-    width: 100px;
+    width: 80%;
     padding: 0;
 }
 
@@ -64,10 +65,15 @@
 }
 
 .attributes-content .prototypes{
-    display: grid;
+    display: table-row;
     grid-template-columns: auto auto;
     max-height: 400px;
     overflow-y: scroll;
+}
+
+.attributes-content .prototypes .att-name{
+    display: flex;
+    justify-content: space-between;
 }
 
 .attributes-content hr {

@@ -32,7 +32,7 @@ export const CURVE_TYPE = {
 export const COLORS = {
     PATCH_COLORS: {
         default: [0.4, 1.0, 0.6, 1.0],
-        selected: [0.0, 0.0, 0.8, 0.2],
+        selected: [0.8, 0.0, 0.2, 0.2],
     },
     CURVE_COLORS: {
         default: [0.0,0.0,0.0,1],

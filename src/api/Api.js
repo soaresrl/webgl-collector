@@ -22,7 +22,7 @@ export default class Api {
         this.subFunctions.splice(index);
     }
 
-    listen(model, updateConnection, handleRoomCreated, updateCanvas, updateMessages){
+    listen(model, updateConnection, handleRoomCreated, updateCanvas, updateMessages, addAttribute, addAttributes, updateAttribute, removeAttribute){
         this.socket.on('connect', ()=>{
             updateConnection();
         });
@@ -79,7 +79,28 @@ export default class Api {
 
         this.socket.on('receive-prototypes', (prototypes)=>{
             this.subFunctions[0](prototypes);
-        })
+        });
+
+        this.socket.on('add-attribute', (attribute)=>{
+            console.log('add-attribute');
+            //addAtribute(attribute);
+        });
+
+        this.socket.on('receive-attribute', (attribute)=>{
+            addAttribute(attribute);
+        });
+
+        this.socket.on('receive-attributes', (attributes)=>{
+            addAttributes(attributes);
+        });
+
+        this.socket.on('update-attribute', (attribute)=>{
+            updateAttribute(attribute);
+        });
+
+        this.socket.on('remove-attribute', (attributeName)=>{
+            removeAttribute(attributeName);
+        });
 
         /* this.socket.on('receive-symbols', (symbols)=>{
             model.attributes_symbols = symbols;
@@ -99,12 +120,12 @@ export default class Api {
         this.socket.emit('join-room', token);
     }
 
-    selectFence(xmin, xmax, ymin, ymax){
-        this.socket.emit('select-fence', xmin, xmax, ymin, ymax);
+    selectFence(xmin, xmax, ymin, ymax, isShiftPressed){
+        this.socket.emit('select-fence', xmin, xmax, ymin, ymax, isShiftPressed);
     }
 
-    selectPick(x, y, tol){
-        this.socket.emit('select-pick', x, y, tol);
+    selectPick(x, y, tol, isShiftPressed){
+        this.socket.emit('select-pick', x, y, tol, isShiftPressed);
     }
 
     delSelectedEntities(){
@@ -130,6 +151,18 @@ export default class Api {
 
     applyAttribute(attribute){
         this.socket.emit('apply-attribute', attribute);
+    }
+
+    createAttribute(attribute){
+        this.socket.emit('create-attribute', attribute);
+    }
+
+    updateAttribute(attribute){
+        this.socket.emit('update-attribute', attribute);
+    }
+
+    removeAttribute(attributeName){
+        this.socket.emit('remove-attribute', attributeName);
     }
 
     /* getAttibutes(handle_attributes){

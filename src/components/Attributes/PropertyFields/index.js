@@ -11,7 +11,8 @@ export default class PropertyField extends Component {
         switch (type) {
             case "float":
                 return (<InputNumber
-                            value={this.props.attribute.properties[property]}
+                            key={`${property}-input-float`}
+                            value={this.props.attribute.properties[property] || 0}
                             step="0.01"
                             size='small'
                             onChange={(e)=>{this.props.handleChangeProperty(e, property, type)}}
@@ -19,13 +20,15 @@ export default class PropertyField extends Component {
             
             case "int":
                 return (<InputNumber 
+                            key={`${property}-input-int`}
                             size='small'
-                            value={this.props.attribute.properties[property]}
+                            value={this.props.attribute.properties[property] || 0}
                             onChange={(e)=>{this.props.handleChangeProperty(e, property, type)}}
                         ></InputNumber>)
             
             case "bool":
                 return (<Checkbox 
+                            key={`${property}-checkbox`}
                             checked={this.props.attribute.properties[property]}
                             onChange={(e)=>{this.props.handleChangeProperty(e, property, type)}}
                         ></Checkbox>)
@@ -38,14 +41,15 @@ export default class PropertyField extends Component {
                         />)
 
             case "list":
+
                 return( <Radio.Group value={this.props.attribute.properties[property][1]}>
                             {this.props.attribute.properties[property][0].map((name, index)=>(
-                                <Radio key={`${name}-${index}`} value={index}>{name}</Radio>
+                               <Radio key={`${name}-${index}-radio`} value={index}>{name}</Radio>
                             ))}
                         </Radio.Group>)
             
             case "string":
-                return( <Input value={this.props.attribute.properties[property]}
+                return( <Input key={`${property}-string`} value={this.props.attribute.properties[property]}
                             size='small' />)
         
             default:

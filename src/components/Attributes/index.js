@@ -1,4 +1,4 @@
-import React, { Component } from "react"
+import React, { Component, createRef } from "react"
 import Draggable from 'react-draggable'
 import { CloseSquareOutlined } from '@ant-design/icons'
 import { Button, Input } from 'antd'
@@ -14,6 +14,7 @@ export default class Attributes extends Component{
         this.state = {
             attributes: [],
             prototypes: [],
+            disabled: true,
             selectedPrototype: null,
             currentAttribute: null
         }
@@ -22,6 +23,9 @@ export default class Attributes extends Component{
         this.handleChangeProperty = this.handleChangeProperty.bind(this);
         this.handleChangeAttributeName = this.handleChangeAttributeName.bind(this);
         this.handleSelectedPrototype = this.handleSelectedPrototype.bind(this);
+        this.handleMouseLeave = this.handleMouseLeave.bind(this);
+        this.handleMouseOver = this.handleMouseOver.bind(this);
+
     }
 
     componentDidMount(){
@@ -52,12 +56,13 @@ export default class Attributes extends Component{
             selectedPrototype: type,
             currentAttribute: {
                 ...prototype,
+                name: '',
                 properties: {
                     ...prototype.properties,
                     'Color': {r: prototype.properties.Color[0] || 0, g: prototype.properties.Color[1] || 0, b: prototype.properties.Color[2] || 0}
                 }
             }
-        })
+        });
     }
 
     handleChangeProperty(e, property, type){
@@ -116,18 +121,24 @@ export default class Attributes extends Component{
         }
     }
 
-    handleChangeAttributeName(e){
+    handleChangeAttributeName(name){
         this.setState({
             ...this.state,
             currentAttribute: {
                 ...this.state.currentAttribute,
-                name: e.target.value
+                name
             }
         })
     }
 
     applyChanges(){
-        let attribute = this.state.currentAttribute;
+        const attribute = this.state.currentAttribute;
+        
+        if(attribute.name == ''){
+            alert('Attribute must have a name');
+            return;
+        }
+        
         const changedAttribute = {
             ...attribute,
             properties: {
@@ -136,23 +147,37 @@ export default class Attributes extends Component{
             }
         }
 
-        /* this.setState({
+        this.props.addAttribute(changedAttribute);
+
+        this.props.Api.createAttribute(changedAttribute);
+
+        this.setState({
             ...this.state,
-            attributes: changedAttribute
-        }); */
+            currentAttribute: null
+        }, ()=>{this.handleSelectedPrototype(attribute.type)});
+        //this.props.Api.getAttributeSymbols();
+    }
 
-        // this.props.addAttribute(changedAttribute);
+    handleMouseOver(){
+        this.setState({
+            ...this.state,
+            disabled: false
+        });
+    }
 
-        this.props.Api.applyAttribute(changedAttribute);
-        this.props.Api.getAttributeSymbols();
+    handleMouseLeave(){
+        this.setState({
+            ...this.state,
+            disabled: true
+        });
     }
 
     render(){
         return(
-            <Draggable disabled={true}>
+            <Draggable disabled={this.state.disabled}>
                 <div className='attributes-content'>
-                    <div className='title'>
-                        <h4>Attributes</h4>
+                    <div className='title' onMouseOver={this.handleMouseOver} onMouseLeave={this.handleMouseLeave}>
+                        <h4>Create Attribute</h4>
                         <CloseSquareOutlined onClick={this.handleCancel.bind(this)} className='icon' />
                     </div>
                     <hr className="solid"/>
@@ -164,11 +189,14 @@ export default class Attributes extends Component{
                         </select>
                         {this.state.currentAttribute && 
                             <div className='prototypes'>
-                                <p> Name: </p>
-                                <Input 
-                                    placeholder="type attribute's name..." 
-                                    onChange={this.handleChangeAttributeName}
-                                />
+                                <div className="att-name">
+                                    <p> Name: </p>
+                                    <Input 
+                                        placeholder="type attribute's name..." 
+                                        onChange={(e)=>{this.handleChangeAttributeName(e.target.value)}}
+                                        value={this.state.currentAttribute?.name}
+                                    />
+                                </div>
                                 <Prototype
                                     currentAttribute={this.state.currentAttribute}
                                     handleChangeProperty={this.handleChangeProperty}
@@ -178,7 +206,7 @@ export default class Attributes extends Component{
                     </div>
                     <div className="action-buttons">
                         <Button onClick={this.handleCancel.bind(this)} danger >Cancel</Button>
-                        <Button onClick={this.applyChanges.bind(this)} type='primary'>Apply</Button>
+                        <Button onClick={this.applyChanges.bind(this)} type='primary'>Create</Button>
                     </div>
                 </div>
             </Draggable>

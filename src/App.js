@@ -29,16 +29,25 @@ class App extends Component {
         this.updateCanvas = this.updateCanvas.bind(this);
         this.updateMessages = this.updateMessages.bind(this);
         this.setUsername = this.setUsername.bind(this);
+        this.addAttribute = this.addAttribute.bind(this);
+        this.removeAttribute = this.removeAttribute.bind(this);
+        this.addAttributes = this.addAttributes.bind(this);
+        this.updateAttribute = this.updateAttribute.bind(this);
+
     }
 
     componentDidMount(){
         this.Api = new Api();
-        this.Api.connect("https://half-edge-apy.herokuapp.com/");
+        this.Api.connect("127.0.0.1:8000");
         this.Api.listen(this.model, 
             this.updateConnection, 
             this.handleRoomCreated, 
             this.updateCanvas,
-            this.updateMessages);
+            this.updateMessages,
+            this.addAttribute,
+            this.addAttributes,
+            this.updateAttribute,
+            this.removeAttribute);
     }
 
     updateConnection(){
@@ -72,6 +81,22 @@ class App extends Component {
 
     updateCanvas(){
         this.homeRef.current.updateCanvas();
+    }
+
+    addAttribute(attribute){
+        this.homeRef.current.addAttribute(attribute);
+    }
+
+    addAttributes(attributes){
+        this.homeRef.current.addAttributes(attributes);
+    }
+
+    updateAttribute(attribute){
+        this.homeRef.current.updateAttribute(attribute);
+    }
+
+    removeAttribute(attribute){
+        this.homeRef.current.removeAttribute(attribute);
     }
 
     render() {

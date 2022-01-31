@@ -19,21 +19,25 @@ export default class Home extends Component {
 
         this.state = {
             mouseAction: null,
-            isAttributeVisible: false/* ,
-            attributes: [] */
+            isAttributeVisible: false,
+            attributes: []
         }
+
         this.canvasRef = createRef();
         this.roomModalRef = createRef();
         this.attributesRef = createRef();
         this.messagesRef = createRef();
         this.createRoomRef = createRef();
         this.meshModalRef = createRef();
+        this.sideMenuRef = createRef();
         // Bind handle functions
         this.changeMouseAction = this.changeMouseAction.bind(this);
         this.updateMessages = this.updateMessages.bind(this);
         this.setAttibuteVisible = this.setAttibuteVisible.bind(this);
         this.setAttibuteNotVisible = this.setAttibuteNotVisible.bind(this);
-        // this.addAttribute = this.addAttribute.bind(this);
+        this.addAttribute = this.addAttribute.bind(this);
+        this.removeAttribute = this.removeAttribute.bind(this);
+        this.updateAttribute = this.updateAttribute.bind(this);
     }
 
     componentDidUpdate(prevProps, prevState){
@@ -83,12 +87,58 @@ export default class Home extends Component {
         this.canvasRef.current.paint();
     }
 
-    /* addAttribute(newAttribute){
+    addAttribute(newAttribute){
         this.setState({
             ...this.state,
             attributes: [...this.state.attributes, newAttribute]
-        })
-    } */
+        }, () => {
+            if(this.sideMenuRef.current.selectedAttributes == null){
+                this.sideMenuRef.current.handleSelectAttribute(this.state.attributes[0]?.name);
+            }
+        });
+    }
+
+    addAttributes(attributes){
+        this.setState({
+            ...this.state,
+            attributes: attributes
+        }, () => {
+            if(this.sideMenuRef.current.selectedAttributes == null){
+                this.sideMenuRef.current.handleSelectAttribute(this.state.attributes[0]?.name);
+            }
+        });
+    }
+
+    updateAttribute(updatedAttribute){
+        const updatedAttributes = this.state.attributes.map((attribute)=>{
+            if(attribute.name == updatedAttribute.name){
+                return updatedAttribute;
+            }
+            return attribute
+        });
+
+        this.setState({
+            ...this.state,
+            attributes: updatedAttributes
+        }, () => {
+            if(this.sideMenuRef.current.selectedAttributes == null){
+                this.sideMenuRef.current.handleSelectAttribute(updatedAttribute.name);
+            }
+        });
+    }
+
+    removeAttribute(name){
+        const attributes = this.state.attributes.filter(attribute => attribute.name != name)
+
+        this.setState({
+            ...this.state,
+            attributes: attributes
+        }, () => {
+            if(this.sideMenuRef.current.selectedAttributes == null){
+                this.sideMenuRef.current.handleSelectAttribute(this.state.attributes[0]?.name);
+            }
+        });
+    }
 
     setAttibuteVisible(){
         this.setState({
@@ -113,13 +163,16 @@ export default class Home extends Component {
                         <SideMenu 
                             connected = {this.props.connected}
                             attributesRef = {this.attributesRef} 
-                            // attributes = {this.state.attributes}
+                            attributes = {this.state.attributes}
                             roomModalRef = {this.roomModalRef} 
                             createRoomRef = {this.createRoomRef}
                             meshModalRef = {this.meshModalRef}
+                            ref = {this.sideMenuRef}
                             Api = {this.props.Api} 
                             canvasRef = {this.canvasRef}
                             model = {this.props.model} 
+                            updateAttribute = {this.updateAttribute}
+                            removeAttribute = {this.removeAttribute}
                             setAttibuteVisible = {this.setAttibuteVisible}
                             changeMouseAction={this.changeMouseAction}
                         />
@@ -178,7 +231,7 @@ export default class Home extends Component {
                     Api={this.props.Api} 
                     model={this.props.model}
                     setAttibuteNotVisible = {this.setAttibuteNotVisible}
-                    // addAttribute = {this.addAttribute}
+                    addAttribute = {this.addAttribute}
                     ref={this.attributesRef} 
                 />}
 
