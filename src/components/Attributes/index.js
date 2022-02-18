@@ -1,7 +1,7 @@
 import React, { Component, createRef } from "react"
 import Draggable from 'react-draggable'
 import { CloseSquareOutlined } from '@ant-design/icons'
-import { Button, Input } from 'antd'
+import { Button, Input, notification } from 'antd'
 
 import { Prototype } from './Prototype'
 import './styles.css'
@@ -133,6 +133,18 @@ export default class Attributes extends Component{
 
     applyChanges(){
         const attribute = this.state.currentAttribute;
+
+        const hasAttributeWithSameName = this.props.attributes.find((att) => att.name === attribute.name);
+
+        if(hasAttributeWithSameName){
+            notification.error({
+                message: `An attribute with name "${attribute.name}" has already been created.`,
+                description: 'Create the attribute again with a different name.',
+                placement: 'topRight',
+            });
+
+            return;
+        }
         
         if(attribute.name == ''){
             alert('Attribute must have a name');
@@ -155,7 +167,11 @@ export default class Attributes extends Component{
             ...this.state,
             currentAttribute: null
         }, ()=>{this.handleSelectedPrototype(attribute.type)});
-        //this.props.Api.getAttributeSymbols();
+
+        notification.success({
+            message: `Attribute "${attribute.name}" created.`,
+            placement: 'topRight',
+        });
     }
 
     handleMouseOver(){

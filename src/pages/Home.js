@@ -93,7 +93,7 @@ export default class Home extends Component {
             attributes: [...this.state.attributes, newAttribute]
         }, () => {
             if(this.sideMenuRef.current.selectedAttributes == null){
-                this.sideMenuRef.current.handleSelectAttribute(this.state.attributes[0]?.name);
+                this.sideMenuRef.current.handleSelectAttribute(newAttribute.name);
             }
         });
     }
@@ -232,6 +232,7 @@ export default class Home extends Component {
                     model={this.props.model}
                     setAttibuteNotVisible = {this.setAttibuteNotVisible}
                     addAttribute = {this.addAttribute}
+                    attributes = {this.state.attributes}
                     ref={this.attributesRef} 
                 />}
 
