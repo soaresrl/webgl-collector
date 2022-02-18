@@ -455,7 +455,7 @@ export default class Canvas extends Component {
 
         this.gl.enableVertexAttribArray(this.positionAttributeLocation);
         this.gl.vertexAttribPointer(this.positionAttributeLocation, 3, this.gl.FLOAT, false, 0, 0);
-        this.gl.uniform1f(this.pointSizeLocation, 2.0);
+        this.gl.uniform1f(this.pointSizeLocation, 4.0);
 
         this.gl.drawArrays(this.gl.POINTS, 0, verticesBuffer.length / 3);
     }
@@ -558,8 +558,8 @@ export default class Canvas extends Component {
         this.gl.enableVertexAttribArray(this.positionAttributeLocation);
         this.gl.vertexAttribPointer(this.positionAttributeLocation, 3, this.gl.FLOAT, false, 0, 0);
 
-        this.gl.uniform4fv(this.colorLocation, [0.0,0.0,0.0,1.0]);
-        this.gl.uniform1f(this.pointSizeLocation, 1.0);
+        this.gl.uniform4fv(this.colorLocation, [0.4,0.4,0.4,1.0]);
+        this.gl.uniform1f(this.pointSizeLocation, 2.0);
         this.gl.drawArrays(this.gl.POINTS, 0, vertices.length/3);
 
         // Draw grid center lines
