@@ -14,7 +14,8 @@ export default class MeshManager extends Component {
                 meshTypes: null,
                 shapeTypes: null,
                 elemTypes: null,
-                diagTypes: null
+                diagTypes: null,
+                algTypes: null
             }
         }
     }
@@ -47,7 +48,8 @@ export default class MeshManager extends Component {
                 meshTypes: null,
                 shapeTypes: null,
                 elemTypes: null,
-                diagTypes: null
+                diagTypes: null,
+                algTypes: null
             }
         });
     }
@@ -60,7 +62,8 @@ export default class MeshManager extends Component {
                 meshTypes: null,
                 shapeTypes: null,
                 elemTypes: null,
-                diagTypes: null
+                diagTypes: null,
+                algTypes: null
             }
         })
     }
@@ -108,6 +111,19 @@ export default class MeshManager extends Component {
                             onChange={(value)=>{this.handleSelectChange(value, 'diagTypes')}}>
                                 {MESH.diagTypes.map(({ name }, index)=>(
                                     <Select.Option value={name} key={`${index}-mesh-type`}> {name} </Select.Option>
+                                ))}
+                        </Select>
+                    </div>
+                    <div className='mesh-container'>
+                        <span className='mesh-container-item'>Algorithm type</span>
+                        <Select className='mesh-container-item' 
+                            style={{ width: 200 }} 
+                            placeholder='Select algorithm type...' 
+                            disabled={this.state.selectedMesh.meshTypes?.name != 'Triangular Boundary Contraction'}
+                            value={this.state.selectedMesh.algTypes?.name}
+                            onChange={(value)=>{this.handleSelectChange(value, 'algTypes')}}>
+                                {MESH.algTypes.map(({ name }, index)=>(
+                                    <Select.Option value={name} key={`${index}-alg-type`}> {name} </Select.Option>
                                 ))}
                         </Select>
                     </div>

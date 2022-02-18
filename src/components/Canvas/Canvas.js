@@ -239,25 +239,21 @@ export default class Canvas extends Component {
             const triangles = patch.triangles;
             let pCoords = []
 
+            const materialAttribute = patch.attributes.find(attribute => attribute.type === 'Material');
+
             if (patch.selected) {
                 this.gl.uniform4fv(this.colorLocation, COLORS.PATCH_COLORS.selected);
             }
             else if(patch.isDeleted){
                 this.gl.uniform4fv(this.colorLocation, [0.95, 0.95, 0.95, 1.0])
             }
-            else if(patch.attributes.length != 0){
-                for(let i = 0; i < patch.attributes.length;  i++){
-                    //const { attribute } = patch.attributes[i]
-                    if(patch.attributes[i].type == 'Material'){
-                        const color =   [
-                                        patch.attributes[i].properties.Color[0]/255, 
-                                        patch.attributes[i].properties.Color[1]/255, 
-                                        patch.attributes[i].properties.Color[2]/255, 1.0
-                                        ]
-                        this.gl.uniform4fv(this.colorLocation, color);
-                        break;
-                    }
-                }
+            else if(materialAttribute){
+                const color =   [
+                    materialAttribute.properties.Color[0]/255, 
+                    materialAttribute.properties.Color[1]/255, 
+                    materialAttribute.properties.Color[2]/255, 1.0
+                                ]
+                this.gl.uniform4fv(this.colorLocation, color);
             }
             else {
                 this.gl.uniform4fv(this.colorLocation, COLORS.PATCH_COLORS.default)

@@ -101,11 +101,6 @@ export default class Api {
         this.socket.on('remove-attribute', (attributeName)=>{
             removeAttribute(attributeName);
         });
-
-        /* this.socket.on('receive-symbols', (symbols)=>{
-            model.attributes_symbols = symbols;
-            updateCanvas();
-        }) */
     }
 
     insertCurve(curve){
@@ -164,11 +159,6 @@ export default class Api {
     removeAttribute(attributeName){
         this.socket.emit('remove-attribute', attributeName);
     }
-
-    /* getAttibutes(handle_attributes){
-        this.socket.emit('get-attributes');
-        this.subscribe(handle_attributes);
-    } */
 
     getAttributeSymbols(){
         this.socket.emit('get-attribute-symbols');

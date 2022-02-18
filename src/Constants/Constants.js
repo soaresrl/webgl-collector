@@ -104,6 +104,20 @@ export const MESH = {
             name: 'Optimal',
             value: 4
         }
+    ],
+    algTypes: [
+        {
+            name: 'Quadtree',
+            value: 1
+        },
+        {
+            name: 'Regular Grid',
+            value: 2
+        },
+        {
+            name: 'Optimal',
+            value: 3
+        }
     ]
 }
 
