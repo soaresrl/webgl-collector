@@ -70,6 +70,10 @@
     color: #6A8BB4;
 }
 
+.file-upload-label{
+    cursor: pointer;
+}
+
 .item-selected { 
     cursor: pointer;
     transition: 0.5s;

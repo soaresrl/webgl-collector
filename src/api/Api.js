@@ -1,170 +1,196 @@
-import { io } from 'socket.io-client';
-import Line from '../curves/line';
+import { Buffer } from "buffer";
+import { io } from "socket.io-client";
+import Line from "../curves/line";
 
 export default class Api {
-    constructor(){
-        this.subFunctions = [];
-    }
+  constructor() {
+    this.subFunctions = [];
+  }
 
-    connect(url){
-        this.socket = io(url, {transports: ['websocket']});
-    }
+  connect(url) {
+    this.socket = io(url, { transports: ["websocket"] });
+  }
 
-    subscribe(func){
-        this.subFunctions = [
-            ...this.subFunctions,
-            func
-        ]
-    }
+  subscribe(func) {
+    this.subFunctions = [...this.subFunctions, func];
+  }
 
-    unsubscribe(func){
-        const index = this.subFunctions.findIndex(f => f.name == func.name);
-        this.subFunctions.splice(index);
-    }
+  unsubscribe(func) {
+    const index = this.subFunctions.findIndex((f) => f.name == func.name);
+    this.subFunctions.splice(index);
+  }
 
-    listen(model, updateConnection, handleRoomCreated, updateCanvas, updateMessages, addAttribute, addAttributes, updateAttribute, removeAttribute){
-        this.socket.on('connect', ()=>{
-            updateConnection();
-        });
+  listen(
+    model,
+    updateConnection,
+    handleRoomCreated,
+    updateCanvas,
+    updateMessages,
+    addAttribute,
+    addAttributes,
+    updateAttribute,
+    removeAttribute
+  ) {
+    this.socket.on("connect", () => {
+      updateConnection();
+    });
 
-        this.socket.on("disconnect", (reason) => {
-            alert(`Disconnected from server, reason: ${reason}`);
-        });
+    this.socket.on("disconnect", (reason) => {
+      alert(`Disconnected from server, reason: ${reason}`);
+    });
 
-        this.socket.on("error", (reason) => {
-            alert(`Disconnected from server, reason: ${reason}`);
-        });
+    this.socket.on("error", (reason) => {
+      alert(`Disconnected from server, reason: ${reason}`);
+    });
 
-        this.socket.on('room-created', (data)=>{
-            handleRoomCreated(data.room_id);
-        });
+    this.socket.on("room-created", (data) => {
+      handleRoomCreated(data.room_id);
+    });
 
-        this.socket.on('room-joined', (room_id)=>{
-            handleRoomCreated(room_id);
-        });
+    this.socket.on("room-joined", (room_id) => {
+      handleRoomCreated(room_id);
+    });
 
-        this.socket.on("update-model", (_model) => {
-            const edges = [];
-            const vertices = [
-                ..._model.vertices
-            ];
-            const meshes = [
-                ..._model.meshes
-            ]
+    this.socket.on("update-model", (_model) => {
+      const edges = [];
+      const vertices = [..._model.vertices];
+      const meshes = [..._model.meshes];
 
-            _model.edges.forEach(edge => {
-                let new_line = new Line(edge.points[0][0], edge.points[0][1], edge.points[1][0], edge.points[1][1], edge.attributes);
-                new_line.selected = edge.selected;
-                edges.push(new_line);
-            });
+      _model.edges.forEach((edge) => {
+        let new_line = new Line(
+          edge.points[0][0],
+          edge.points[0][1],
+          edge.points[1][0],
+          edge.points[1][1],
+          edge.attributes
+        );
+        new_line.selected = edge.selected;
+        edges.push(new_line);
+      });
 
-            model.curves = [];
-            model.curves = edges;
-            model.vertices = vertices;
-            model.meshes = meshes
-            updateCanvas();
-            
-            this.getTriangs();
-            // this.getAttributeSymbols();
-        });
+      model.curves = [];
+      model.curves = edges;
+      model.vertices = vertices;
+      model.meshes = meshes;
+      updateCanvas();
 
-        this.socket.on('tesselation', (data) => {
-            model.patches = data;
-            updateCanvas();
-        });
+      this.getTriangs();
+      // this.getAttributeSymbols();
+    });
 
-        this.socket.on('message', (message)=>{
-            updateMessages(message);
-        });
+    this.socket.on("tesselation", (data) => {
+      model.patches = data;
+      updateCanvas();
+    });
 
-        this.socket.on('receive-prototypes', (prototypes)=>{
-            this.subFunctions[0](prototypes);
-        });
+    this.socket.on("message", (message) => {
+      updateMessages(message);
+    });
 
-        this.socket.on('add-attribute', (attribute)=>{
-            console.log('add-attribute');
-            //addAtribute(attribute);
-        });
+    this.socket.on("receive-prototypes", (prototypes) => {
+      this.subFunctions[0](prototypes);
+    });
 
-        this.socket.on('receive-attribute', (attribute)=>{
-            addAttribute(attribute);
-        });
+    this.socket.on("add-attribute", (attribute) => {
+      console.log("add-attribute");
+      //addAtribute(attribute);
+    });
 
-        this.socket.on('receive-attributes', (attributes)=>{
-            addAttributes(attributes);
-        });
+    this.socket.on("receive-attribute", (attribute) => {
+      addAttribute(attribute);
+    });
 
-        this.socket.on('update-attribute', (attribute)=>{
-            updateAttribute(attribute);
-        });
+    this.socket.on("receive-attributes", (attributes) => {
+      addAttributes(attributes);
+    });
 
-        this.socket.on('remove-attribute', (attributeName)=>{
-            removeAttribute(attributeName);
-        });
-    }
+    this.socket.on("update-attribute", (attribute) => {
+      updateAttribute(attribute);
+    });
 
-    insertCurve(curve){
-        this.socket.emit('insert-curve', curve);
-    }
+    this.socket.on("remove-attribute", (attributeName) => {
+      removeAttribute(attributeName);
+    });
 
-    createRoom(){
-        this.socket.emit('create-room');
-    }
+    this.socket.on("download-file", (jsonModel) => {
+      const downloadElement = document.createElement("a");
+      const file = new Blob([jsonModel], { type: "application/json" });
+      downloadElement.href = URL.createObjectURL(file);
+      downloadElement.download = this.socket.id;
+      downloadElement.click();
+    });
+  }
 
-    joinRoom(token){
-        this.socket.emit('join-room', token);
-    }
+  saveFile() {
+    this.socket.emit("save-file");
+  }
 
-    selectFence(xmin, xmax, ymin, ymax, isShiftPressed){
-        this.socket.emit('select-fence', xmin, xmax, ymin, ymax, isShiftPressed);
-    }
+  loadFile(file) {
+    this.socket.emit("load-file", file);
+  }
 
-    selectPick(x, y, tol, isShiftPressed){
-        this.socket.emit('select-pick', x, y, tol, isShiftPressed);
-    }
+  insertCurve(curve) {
+    this.socket.emit("insert-curve", curve);
+  }
 
-    delSelectedEntities(){
-        this.socket.emit('delete-selected-entities');
-    }
+  createRoom() {
+    this.socket.emit("create-room");
+  }
 
-    intersect(){
-        this.socket.emit('intersect');
-    }
+  joinRoom(token) {
+    this.socket.emit("join-room", token);
+  }
 
-    getTriangs(){
-        this.socket.emit('tesselation');
-    }
+  selectFence(xmin, xmax, ymin, ymax, isShiftPressed) {
+    this.socket.emit("select-fence", xmin, xmax, ymin, ymax, isShiftPressed);
+  }
 
-    sendMessage(message){
-        this.socket.emit('message', message);
-    }
+  selectPick(x, y, tol, isShiftPressed) {
+    this.socket.emit("select-pick", x, y, tol, isShiftPressed);
+  }
 
-    getPrototypes(handle_prototypes){
-        this.socket.emit('get-prototypes');
-        this.subscribe(handle_prototypes);
-    }
+  delSelectedEntities() {
+    this.socket.emit("delete-selected-entities");
+  }
 
-    applyAttribute(attribute){
-        this.socket.emit('apply-attribute', attribute);
-    }
+  intersect() {
+    this.socket.emit("intersect");
+  }
 
-    createAttribute(attribute){
-        this.socket.emit('create-attribute', attribute);
-    }
+  getTriangs() {
+    this.socket.emit("tesselation");
+  }
 
-    updateAttribute(attribute){
-        this.socket.emit('update-attribute', attribute);
-    }
+  sendMessage(message) {
+    this.socket.emit("message", message);
+  }
 
-    removeAttribute(attributeName){
-        this.socket.emit('remove-attribute', attributeName);
-    }
+  getPrototypes(handle_prototypes) {
+    this.socket.emit("get-prototypes");
+    this.subscribe(handle_prototypes);
+  }
 
-    getAttributeSymbols(){
-        this.socket.emit('get-attribute-symbols');
-    }
+  applyAttribute(attribute) {
+    this.socket.emit("apply-attribute", attribute);
+  }
 
-    generateMesh(meshInfo){
-        this.socket.emit('generate-mesh', meshInfo);
-    }
+  createAttribute(attribute) {
+    this.socket.emit("create-attribute", attribute);
+  }
+
+  updateAttribute(attribute) {
+    this.socket.emit("update-attribute", attribute);
+  }
+
+  removeAttribute(attributeName) {
+    this.socket.emit("remove-attribute", attributeName);
+  }
+
+  getAttributeSymbols() {
+    this.socket.emit("get-attribute-symbols");
+  }
+
+  generateMesh(meshInfo) {
+    this.socket.emit("generate-mesh", meshInfo);
+  }
 }
